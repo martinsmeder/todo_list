@@ -1,0 +1,36 @@
+------------------------------> FACTORIES AND MODULES <--------------------------------
+
+=================================== appLogic.js 
+
+ItemFactory:
+A function that creates a new todo item object with properties such as title, 
+description, priority, due date, and isDone
+
+ProjectFactory
+A function that creates a new project object with properties such as title and an array 
+of related todo items
+
+NoteFactory
+Exports a function that creates a new note object with properties such as title and 
+content
+
+ItemsModule
+An object with functions for creating new todo items, deleting todo items, updating 
+todo items, and returning all todo items
+
+ProjectsModule 
+An object with functions for creating new projects, deleting projects, updating projects,
+adding todo items to projects, and returning all projects
+
+NotesModule: 
+Exports an object with functions for creating new notes, deleting notes, updating notes,
+and returning all notes
+
+DueDate 
+An object with functions for organizing todo items by due date, such as getting all 
+items due today or this week
+
+InterfaceHelpers
+Exports utility functions that help with rendering the interface, such as functions for 
+creating HTML elements and attaching event listeners
+
