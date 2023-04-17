@@ -1,1 +1,1 @@
-(()=>{console.log("This seem to be working.");console.log({first:"James"})})();
+console.log("This seem to be working.");
