@@ -1,7 +1,5 @@
 // TO DO:
-// ItemsModule
-// An object with functions for creating new todo items, deleting todo items, updating
-// todo items, and returning all todo items
+// ProjectsModule --> Delete Item from project
 
 // Factories
 const ItemFactory = (title, description, priority, dueDate, isDone) => ({
@@ -12,12 +10,10 @@ const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   isDone,
 });
 
-const ProjectFactory = (title, projectArray = []) => ({
+const ProjectFactory = (title, array = []) => ({
   title,
-  projectArray,
+  array,
 });
-
-const NoteFactory = (title, content) => ({ title, content });
 
 // Modules
 const ItemsModule = (() => {
@@ -36,14 +32,88 @@ const ItemsModule = (() => {
     }
   };
 
+  const editItem = (item, title, description, priority, dueDate, isDone) => {
+    /* eslint-disable no-param-reassign */
+    item.title = title;
+    item.description = description;
+    item.priority = priority;
+    item.dueDate = dueDate;
+    item.isDone = isDone;
+  };
+
+  const getAllItems = () => itemArray;
+
   return {
     itemArray,
     createItem,
     deleteItem,
+    editItem,
+    getAllItems,
   };
 })();
 
-// Test
+// Modules
+const ProjectModule = (() => {
+  const projectArray = [];
+
+  const createProject = (title) => {
+    const newProject = ProjectFactory(title, []);
+    projectArray.push(newProject);
+    return newProject;
+  };
+
+  const deleteProject = (project) => {
+    const index = projectArray.indexOf(project);
+    if (index > -1) {
+      projectArray.splice(index, 1);
+    }
+  };
+
+  const editProject = (project, title) => {
+    project.title = title;
+  };
+
+  const addItem = (project, title, description, priority, dueDate, isDone) => {
+    const newProjectItem = ItemFactory(
+      title,
+      description,
+      priority,
+      dueDate,
+      isDone
+    );
+    project.array.push(newProjectItem);
+    return newProjectItem;
+  };
+
+  const getAllProjects = () => projectArray;
+
+  return {
+    projectArray,
+    createProject,
+    deleteProject,
+    editProject,
+    addItem,
+    getAllProjects,
+  };
+})();
+
+// Tests
+
+const aProject = ProjectModule.createProject("Do Stuff", []);
+
+console.log(aProject);
+
+ProjectModule.addItem(
+  aProject,
+  "Stuff",
+  "Do some stuff",
+  "high",
+  "01jul23",
+  false
+);
+
+console.log(aProject);
+
 const newTask = ItemsModule.createItem(
   "Learn2Code",
   "Code code code",
@@ -52,8 +122,4 @@ const newTask = ItemsModule.createItem(
   false
 );
 
-console.table(ItemsModule.itemArray);
-
-ItemsModule.deleteItem(newTask);
-
-console.table(ItemsModule.itemArray);
+console.log(newTask);

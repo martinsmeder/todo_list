@@ -10,10 +10,6 @@ ProjectFactory
 A function that creates a new project object with properties such as title and an array 
 of related todo items
 
-NoteFactory
-Exports a function that creates a new note object with properties such as title and 
-content
-
 ItemsModule
 An object with functions for creating new todo items, deleting todo items, updating 
 todo items, and returning all todo items
@@ -22,15 +18,227 @@ ProjectsModule
 An object with functions for creating new projects, deleting projects, updating projects,
 adding todo items to projects, and returning all projects
 
-NotesModule: 
-Exports an object with functions for creating new notes, deleting notes, updating notes,
-and returning all notes
-
-DueDate 
-An object with functions for organizing todo items by due date, such as getting all 
-items due today or this week
+Organize
+An object with functions for organizing todo items by due date, priority, etc such as getting all 
+items due today or this week and sorting by priority or date
 
 InterfaceHelpers
 Exports utility functions that help with rendering the interface, such as functions for 
 creating HTML elements and attaching event listeners
 
+
+-------------------------------> THE SOLID PRINCIPLES <--------------------------------
+S - Single responsibility: A class should have only one reason to change.
+
+O - Open-closed: A class should be open for extension but closed for modification.
+
+L - Liskov substitution: Subtypes should be substitutable for their base types.
+
+I - Interface segregation: Clients should not be forced to depend on methods they do 
+    not use.
+D - Dependency inversion: High-level modules should not depend on low-level modules. 
+    Both should depend on abstractions.
+
+----------------------> THE SINGLE RESPONSIBILITY PRINCIPLE <--------------------------
+
+* Single Responsibility Principle is the first (and most important) of the SOLID 
+  principles. 
+* Everything an object does should be part of one responsibility (ie DOM stuff, 
+  game logic, etc).
+* Should have only one reason to change. So that changes in the object doesn't screw up 
+  the rest of the components of the program. 
+* The object could call other functionality, but it should not be written there. 
+
+
+============================= Object Role Stereotypes:
+Information holder: 
+* An object designed to know certain information and provide that information to other 
+  objects.
+
+Structurer: 
+* An object that maintains relationships between objects and information about those 
+  relationships.
+
+Service provider: 
+* An object that performs specific work and offers services to others on demand.
+
+Controller: 
+* An object designed to make decisions and control a complex task.
+
+Coordinator: 
+* An object that doesn’t make many decisions but, in a rote or mechanical way, delegates
+  work to other objects.
+
+Interface: 
+* An object that transforms information or requests between distinct parts of a system.
+
+==================================== Examples:
+
+INFORMATION HOLDER:
+In this example, the Person class is designed to hold information about a person, 
+including their name, age, and address. It provides methods to access this information, 
+but does not perform any work or offer any services.
+
+class Person {
+  constructor(name, age, address) {
+    this.name = name;
+    this.age = age;
+    this.address = address;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getAge() {
+    return this.age;
+  }
+
+  getAddress() {
+    return this.address;
+  }
+}
+
+STRUCTURER:
+In this example, the Playlist class maintains a list of tracks and provides methods to 
+add and remove tracks from the playlist. It structures the relationships between the 
+playlist and the tracks.
+
+class Playlist {
+  constructor(name) {
+    this.name = name;
+    this.tracks = [];
+  }
+
+  addTrack(track) {
+    this.tracks.push(track);
+  }
+
+  removeTrack(track) {
+    const index = this.tracks.indexOf(track);
+    if (index !== -1) {
+      this.tracks.splice(index, 1);
+    }
+  }
+}
+
+SERVICE PROVIDER:
+In this example, the Calculator class provides specific mathematical operations as 
+services that can be called on demand.
+
+class Calculator {
+  static add(a, b) {
+    return a + b;
+  }
+
+  static subtract(a, b) {
+    return a - b;
+  }
+
+  static multiply(a, b) {
+    return a * b;
+  }
+
+  static divide(a, b) {
+    if (b === 0) {
+      throw new Error("Cannot divide by zero");
+    }
+    return a / b;
+  }
+}
+
+CONTROLLER: 
+In this example, the OrderController class is designed to control the process of 
+placing an order. It makes decisions about whether the order is valid and whether to 
+place the order.
+
+class OrderController {
+  constructor(order) {
+    this.order = order;
+  }
+
+  processOrder() {
+    if (this.order.isValid()) {
+      this.order.place();
+    } else {
+      throw new Error("Invalid order");
+    }
+  }
+}
+
+COORDINATOR:
+In this example, the TaskCoordinator class delegates the work of running tasks to other 
+objects in a mechanical way, without making many decisions.
+
+class TaskCoordinator {
+  constructor(tasks) {
+    this.tasks = tasks;
+  }
+
+  run() {
+    for (let task of this.tasks) {
+      task.run();
+    }
+  }
+}
+
+INTERFACE:
+In this example, the Element class represents a DOM element and provides a method 
+setText that sets the text content of the element. The class acts as an interface 
+between the JavaScript code and the web page's visual elements by abstracting away the 
+details of DOM manipulation.
+
+class Element {
+  constructor(selector) {
+    this.element = document.querySelector(selector);
+  }
+
+  setText(text) {
+    this.element.textContent = text;
+  }
+}
+
+// Example usage:
+const heading = new Element("#my-heading");
+heading.setText("Hello, world!");
+
+
+---------------------------------> LOOSE COUPLING <------------------------------------
+
+* Make sure each object can stand alone as much as possible.
+* Tightly coupled objects rely too much on each other so that removing or changing them
+  might mean that you have to completely change another one. Not good. 
+* If writing a game and one wants to change how the user interface worked, one should 
+  be able to do so without completely reworking the game logic.
+* Should be able to start off writing a game for example using console.logs and then
+  add a bunch of DOM functions later without touching the game logic.
+* By reducing coupling in your codebase, you can make it easier to maintain, test, and 
+  scale over time.
+
+What is coupling?
+Coupling is a measure of how interconnected different parts of your codebase are. 
+High coupling means that changes in one part of the code can have a ripple effect on 
+other parts of the code.
+
+Why is high coupling bad?
+High coupling can make your codebase harder to maintain, harder to test, and harder to 
+scale.
+
+How to reduce coupling?
+To reduce coupling, you can use techniques like encapsulation, abstraction, and loose 
+coupling.
+
+Encapsulation:
+Encapsulation involves hiding implementation details behind a public interface. This 
+allows you to change the implementation details without affecting other parts of the 
+code that depend on the public interface.
+
+Abstraction:
+Abstraction involves creating simpler, higher-level interfaces that abstract away 
+complex implementation details. This allows you to change the implementation details 
+without affecting other parts of the code that depend on the higher-level interface.
+
+Loose coupling:
+Loose coupling involves minimizing direct dependencies between different parts of the 
+code. This allows you to change one part of the code without affecting other parts of 
+the code that are not directly dependent on it.
