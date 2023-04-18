@@ -1,5 +1,7 @@
 // TO DO:
-// ProjectsModule --> Delete Item from project
+// Organize
+// An object with functions for organizing todo items by due date, priority, etc such as getting all
+// items due today or this week and sorting by priority or date
 
 // Factories
 const ItemFactory = (title, description, priority, dueDate, isDone) => ({
@@ -16,7 +18,7 @@ const ProjectFactory = (title, array = []) => ({
 });
 
 // Modules
-const ItemsModule = (() => {
+const ItemModule = (() => {
   const itemArray = [];
 
   const createItem = (title, description, priority, dueDate, isDone) => {
@@ -52,7 +54,6 @@ const ItemsModule = (() => {
   };
 })();
 
-// Modules
 const ProjectModule = (() => {
   const projectArray = [];
 
@@ -73,7 +74,14 @@ const ProjectModule = (() => {
     project.title = title;
   };
 
-  const addItem = (project, title, description, priority, dueDate, isDone) => {
+  const addProjectItem = (
+    project,
+    title,
+    description,
+    priority,
+    dueDate,
+    isDone
+  ) => {
     const newProjectItem = ItemFactory(
       title,
       description,
@@ -85,6 +93,13 @@ const ProjectModule = (() => {
     return newProjectItem;
   };
 
+  const deleteProjectItem = (project, item) => {
+    const index = project.array.indexOf(item);
+    if (index > -1) {
+      project.array.splice(index, 1);
+    }
+  };
+
   const getAllProjects = () => projectArray;
 
   return {
@@ -92,34 +107,10 @@ const ProjectModule = (() => {
     createProject,
     deleteProject,
     editProject,
-    addItem,
+    addProjectItem,
+    deleteProjectItem,
     getAllProjects,
   };
 })();
 
-// Tests
-
-const aProject = ProjectModule.createProject("Do Stuff", []);
-
-console.log(aProject);
-
-ProjectModule.addItem(
-  aProject,
-  "Stuff",
-  "Do some stuff",
-  "high",
-  "01jul23",
-  false
-);
-
-console.log(aProject);
-
-const newTask = ItemsModule.createItem(
-  "Learn2Code",
-  "Code code code",
-  "high",
-  "01jul23",
-  false
-);
-
-console.log(newTask);
+console.log(ItemModule, ProjectModule);
