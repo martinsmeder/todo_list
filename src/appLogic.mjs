@@ -1,10 +1,5 @@
-// TO DO:
-// InterfaceHelpers
-// Exports utility functions that help with rendering the interface, such as functions for
-// creating HTML elements and attaching event listeners
-
 // Factories
-const ItemFactory = (title, description, priority, dueDate, isDone) => ({
+export const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   title,
   description,
   priority,
@@ -12,13 +7,13 @@ const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   isDone,
 });
 
-const ProjectFactory = (title, array = []) => ({
+export const ProjectFactory = (title, array = []) => ({
   title,
   array,
 });
 
 // Modules
-const ItemModule = (() => {
+export const ItemModule = (() => {
   const itemArray = [];
 
   const createItem = (title, description, priority, dueDate, isDone) => {
@@ -43,6 +38,10 @@ const ItemModule = (() => {
     item.isDone = isDone;
   };
 
+  const toggleIsDone = (item) => {
+    item.isDone = !item.isDone;
+  };
+
   const getAllItems = () => itemArray;
 
   return {
@@ -50,11 +49,12 @@ const ItemModule = (() => {
     createItem,
     deleteItem,
     editItem,
+    toggleIsDone,
     getAllItems,
   };
 })();
 
-const ProjectModule = (() => {
+export const ProjectModule = (() => {
   const projectArray = [];
 
   const createProject = (title) => {
@@ -113,12 +113,14 @@ const ProjectModule = (() => {
   };
 })();
 
-const OrganizeModule = (() => {
-  // Helper functions
+export const OrganizeModule = (() => {
+  // ============== Helper functions ===============
   const isDueToday = (dateString) => {
-    console.log(dateString);
-    const today = new Date();
-    const date = new Date(dateString);
+    const today = new Date(); // Create a new Date object representing today's date.
+    const date = new Date(dateString); // Create a new Date object from the dateString argument.
+
+    // Check if the date's day, month, and year are equal to the current date's day, month, and year.
+    // If all three are true, return true (meaning the date is due today). Otherwise, return false.
     return (
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
@@ -127,22 +129,25 @@ const OrganizeModule = (() => {
   };
 
   const isDueThisWeek = (dateString) => {
-    const today = new Date();
-    const date = new Date(dateString);
-    const endOfWeek = new Date(
+    const today = new Date(); // Create a new Date object from the dateString argument.
+    const date = new Date(dateString); // Create a new Date object from the dateString argument.
+    const endOfWeek = new Date( // Create a new Date object representing the end of the current week.
       today.getFullYear(),
       today.getMonth(),
       today.getDate() + (7 - today.getDay())
     );
+    // Return true if the date falls between today and the end of the week, false otherwise.
     return date >= today && date <= endOfWeek;
   };
 
-  // Methods
+  // =================== Methods ====================
   const sortByDate = (items) =>
+    // Sort the items in place
     items.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
   const sortByPriority = (items) => {
     const priorities = ["high", "medium", "low"];
+    // Sort the items in place
     return items.sort(
       (a, b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
     );
@@ -150,14 +155,20 @@ const OrganizeModule = (() => {
 
   const getAllDailyItems = () => {
     const allDailyItems = [];
+
+    // Create a copy of the array of all items using the spread operator
     const allItems = [...ItemModule.itemArray];
 
+    // Iterate through all projects and add their items to the allItems array
     ProjectModule.projectArray.forEach((project) => {
       allItems.push(...project.array);
     });
 
+    // Iterate through all items
     allItems.forEach((item) => {
+      // Check if the item is due today...
       if (isDueToday(item.dueDate)) {
+        // ...if the item is due today, add it to the allDailyItems array
         allDailyItems.push(item);
       }
     });
@@ -167,12 +178,16 @@ const OrganizeModule = (() => {
 
   const getAllWeeklyItems = () => {
     const allWeeklyItems = [];
+
+    // Create a copy of the array of all items using the spread operator
     const allItems = [...ItemModule.itemArray];
 
+    // Add items from each project to the allItems array
     ProjectModule.projectArray.forEach((project) => {
       allItems.push(...project.array);
     });
 
+    // Add all the items that are due within this week to the allWeeklyItems array
     allItems.forEach((item) => {
       if (isDueThisWeek(item.dueDate)) {
         allWeeklyItems.push(item);
@@ -189,5 +204,3 @@ const OrganizeModule = (() => {
     sortByPriority,
   };
 })();
-
-console.log(OrganizeModule);
