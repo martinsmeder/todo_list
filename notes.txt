@@ -22,9 +22,28 @@ Organize
 An object with functions for organizing todo items by due date, priority, etc such as getting all 
 items due today or this week and sorting by priority or date
 
-InterfaceHelpers
-Exports utility functions that help with rendering the interface, such as functions for 
-creating HTML elements and attaching event listeners
+=================================== interface.js
+
+SidebarModule:
+* addProjectToSiderbar()
+* removeProjectFromSidebar()
+
+DisplayContentModule:
+* displayAllItems()
+* displayDailyItems()
+* displayWeeklyItems()
+* displayProjectItems()
+* displayItem()
+
+FormModule:
+* openNewItemForm()
+* openNewProjectForm()
+
+EditModule: 
+* removeItem()
+* editItem()
+* toggleDone()
+
 
 
 -------------------------------> THE SOLID PRINCIPLES <--------------------------------
