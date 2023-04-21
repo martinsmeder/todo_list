@@ -18,6 +18,21 @@ console.log(
   OrganizeModule
 );
 
+// 1
+// Extract the form creation logic into its own function. This function should only be
+// responsible for creating and returning the form element. This makes it easier to reuse the
+// form creation logic elsewhere in the codebase.
+
+// 2
+// Extract the item card creation logic into its own function. Similar to the previous point,
+// this function should only be responsible for creating and returning the item card element.
+// This makes it easier to reuse the item card creation logic elsewhere in the codebase.
+
+// 3
+// Move the logic for displaying items into a separate module or component. This makes it easier
+// to reason about the code and keeps the logic for displaying items separate from other
+// functionality.
+
 // New task
 const newTaskBtn = document.querySelector("#newTaskBtn");
 newTaskBtn.addEventListener("click", () => {
@@ -94,87 +109,63 @@ async function createItemForm() {
 
   content.appendChild(form);
 
-  // return form;
+  return content;
 }
 
 async function displayItems() {
   const content = document.querySelector("#content");
+  content.textContent = "";
 
   const items = ItemModule.getAllItems();
+
   if (items.length === 0) {
     const message = document.createElement("p");
     message.textContent = "No items found.";
     content.appendChild(message);
-  } else {
-    const table = document.createElement("table");
-
-    const tableHeader = document.createElement("thead");
-    const headerRow = document.createElement("tr");
-    const titleHeader = document.createElement("th");
-    titleHeader.textContent = "Title";
-    headerRow.appendChild(titleHeader);
-    const descriptionHeader = document.createElement("th");
-    descriptionHeader.textContent = "Description";
-    headerRow.appendChild(descriptionHeader);
-    const priorityHeader = document.createElement("th");
-    priorityHeader.textContent = "Priority";
-    headerRow.appendChild(priorityHeader);
-    const dueDateHeader = document.createElement("th");
-    dueDateHeader.textContent = "Due Date";
-    headerRow.appendChild(dueDateHeader);
-    const isDoneHeader = document.createElement("th");
-    isDoneHeader.textContent = "Is Done?";
-    headerRow.appendChild(isDoneHeader);
-    tableHeader.appendChild(headerRow);
-    table.appendChild(tableHeader);
-
-    const tableBody = document.createElement("tbody");
-    items.forEach((item) => {
-      const row = document.createElement("tr");
-
-      const titleCell = document.createElement("td");
-      titleCell.textContent = item.title;
-      row.appendChild(titleCell);
-
-      const descriptionCell = document.createElement("td");
-      descriptionCell.textContent = item.description;
-      row.appendChild(descriptionCell);
-
-      const priorityCell = document.createElement("td");
-      priorityCell.textContent = item.priority;
-      row.appendChild(priorityCell);
-
-      const dueDateCell = document.createElement("td");
-      dueDateCell.textContent = item.dueDate;
-      row.appendChild(dueDateCell);
-
-      const isDoneCell = document.createElement("td");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = item.isDone;
-      checkbox.addEventListener("change", () => {
-        ItemModule.toggleIsDone(item);
-        displayItems();
-      });
-      isDoneCell.appendChild(checkbox);
-      row.appendChild(isDoneCell);
-
-      const deleteCell = document.createElement("td");
-      const deleteLink = document.createElement("a");
-      deleteLink.href = "#";
-      deleteLink.textContent = "Delete";
-      deleteLink.addEventListener("click", async () => {
-        await ItemModule.deleteItem(item);
-        console.log(ItemModule.itemArray);
-        displayItems();
-      });
-
-      deleteCell.appendChild(deleteLink);
-      row.appendChild(deleteCell);
-
-      tableBody.appendChild(row);
-    });
-    table.appendChild(tableBody);
-    content.appendChild(table);
+    return content;
   }
+
+  items.forEach((item) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    const isDone = document.createElement("input");
+    isDone.type = "checkbox";
+    isDone.checked = item.isDone;
+    isDone.addEventListener("change", async () => {
+      await ItemModule.toggleIsDone(item);
+      displayItems();
+    });
+    card.appendChild(isDone);
+
+    const title = document.createElement("h3");
+    title.textContent = item.title;
+    card.appendChild(title);
+
+    const description = document.createElement("p");
+    description.textContent = item.description;
+    card.appendChild(description);
+
+    const priority = document.createElement("p");
+    priority.textContent = `Priority: ${item.priority}`;
+    card.appendChild(priority);
+
+    const dueDate = document.createElement("p");
+    dueDate.textContent = `Due Date: ${item.dueDate}`;
+    card.appendChild(dueDate);
+
+    const deleteLink = document.createElement("a");
+    deleteLink.href = "#";
+    deleteLink.textContent = "Delete";
+    deleteLink.addEventListener("click", async () => {
+      await ItemModule.deleteItem(item);
+      console.log(ItemModule.itemArray);
+      displayItems();
+    });
+    card.appendChild(deleteLink);
+
+    content.appendChild(card);
+  });
+
+  return content;
 }
