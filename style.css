@@ -24,7 +24,14 @@ header {
 main {
     grid-column: 2 / 3; 
     grid-row: 2 / 3; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border: 1px solid #000;
+}
+
+main #newTaskBtn {
+    width: 100px;
 }
 
 main #content {
@@ -34,8 +41,19 @@ main #content {
     align-items: center;
 }
 
-main #content button {
-    width: 100px;
+main #content .card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ main #content .card * { /* Target every div that is a child of .card */
+    padding-left: 20px;
+}
+
+main tr {
+    background: aqua;
 }
 
 aside {
