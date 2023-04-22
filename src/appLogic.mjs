@@ -29,7 +29,14 @@ export const ItemModule = (() => {
     }
   };
 
-  const editItem = (item, title, description, priority, dueDate, isDone) => {
+  const editItem = async (
+    item,
+    title,
+    description,
+    priority,
+    dueDate,
+    isDone
+  ) => {
     /* eslint-disable no-param-reassign */
     item.title = title;
     item.description = description;
