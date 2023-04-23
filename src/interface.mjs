@@ -19,14 +19,16 @@ console.log(
 );
 
 // TO DO:
-// 1. Clean up code and add overlay
-// 2. Get the projects to work
+// 2. Get the projects to work --> Make them into clickable cards with delete/edit buttons
 // 3. Get the home, daily, weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
-// 4. Style
+// 4. Overlay and style
+
+// ======================================== CREATE FORMS ====================================
 
 function createItemForm() {
   const content = document.querySelector("#content");
+
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -80,14 +82,6 @@ function createItemForm() {
   form.appendChild(isDoneLabel);
   form.appendChild(submitButton);
 
-  content.appendChild(form);
-
-  return form;
-}
-
-async function handleItemFormSubmit() {
-  const form = document.querySelector(".form");
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = e.target.elements.title.value;
@@ -100,10 +94,13 @@ async function handleItemFormSubmit() {
     form.style.display = "none";
     await displayItems();
   });
+
+  content.appendChild(form);
+
+  return form;
 }
 
 function createEditForm(item, card) {
-  const content = document.querySelector("#content");
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -182,10 +179,44 @@ function createEditForm(item, card) {
     await displayItems();
   });
 
+  return form;
+}
+
+function createProjectForm() {
+  const content = document.querySelector("#content");
+  const form = document.createElement("form");
+  form.classList.add("form");
+
+  const titleLabel = document.createElement("label");
+  titleLabel.textContent = "Title:";
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.name = "title";
+  titleInput.required = true;
+
+  const submitButton = document.createElement("button");
+  submitButton.type = "submit";
+  submitButton.textContent = "Create Project";
+
+  form.appendChild(titleLabel);
+  form.appendChild(titleInput);
+  form.appendChild(submitButton);
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = e.target.elements.title.value;
+    ProjectModule.createProject(title);
+    e.target.reset();
+    form.style.display = "none";
+    displayProjects();
+  });
+
   content.appendChild(form);
 
   return form;
 }
+
+// ===================================== CREATE TASKS/ITEMS ======================================
 
 async function createCard(item) {
   const card = document.createElement("div");
@@ -194,7 +225,7 @@ async function createCard(item) {
   const isDone = document.createElement("input");
   isDone.type = "checkbox";
   isDone.checked = item.isDone;
-  isDone.addEventListener("change", async () => {
+  isDone.addEventListener("click", async () => {
     await ItemModule.toggleIsDone(item);
     displayItems();
   });
@@ -239,6 +270,8 @@ async function createCard(item) {
   return card;
 }
 
+// ========================================= DISPLAY STUFF =====================================
+
 async function displayItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
@@ -253,12 +286,36 @@ async function displayItems() {
   return content;
 }
 
+async function displayProjects() {
+  const projectContainer = document.querySelector("#projectContainer");
+  projectContainer.innerHTML = "";
+
+  const projects = await ProjectModule.getAllProjects();
+
+  const ul = document.createElement("ul");
+
+  projects.forEach((project) => {
+    const li = document.createElement("li");
+    li.textContent = project.title;
+    ul.appendChild(li);
+  });
+
+  projectContainer.appendChild(ul);
+}
+
+// ============================================ CONTROLLER =====================================
+
 function controller() {
   const newTaskBtn = document.querySelector("#newTaskBtn");
   newTaskBtn.addEventListener("click", () => {
     console.log("Hi!");
     createItemForm();
-    handleItemFormSubmit();
+  });
+
+  const newProjectBtn = document.querySelector("#newProjectBtn");
+  newProjectBtn.addEventListener("click", () => {
+    console.log("Hi!");
+    createProjectForm();
   });
 }
 
