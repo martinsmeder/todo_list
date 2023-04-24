@@ -94,7 +94,8 @@ export const ProjectModule = (() => {
       description,
       priority,
       dueDate,
-      isDone
+      isDone,
+      project
     );
     project.array.push(newProjectItem);
     return newProjectItem;

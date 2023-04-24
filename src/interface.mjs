@@ -19,10 +19,14 @@ console.log(
 );
 
 // TO DO:
-// 2. Get the projects to work --> Make them into clickable cards with delete/edit buttons
+// 2. Get the projects to work --> step 4 (add new method to ProjectModule???)
 // 3. Get the home, daily, weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
+
+// =============================== PUT ME INTO A FUNCTION PLZ ==============================
+
+let currentProject = null;
 
 // ======================================== CREATE FORMS ====================================
 
@@ -305,6 +309,11 @@ async function projectCard(project) {
 
   const title = document.createElement("h3");
   title.textContent = project.title;
+  title.addEventListener("click", async () => {
+    const projectId = title.parentElement.dataset.id;
+    currentProject = projectId;
+    console.log(currentProject);
+  });
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
@@ -363,6 +372,13 @@ async function displayProjects() {
 // ============================================ CONTROLLER =====================================
 
 function controller() {
+  const homeBtn = document.querySelector("#allItems a:first-child");
+  homeBtn.addEventListener("click", async () => {
+    currentProject = null;
+    console.log(currentProject);
+    await displayItems();
+  });
+
   const newTaskBtn = document.querySelector("#newTaskBtn");
   newTaskBtn.addEventListener("click", () => {
     itemForm();
