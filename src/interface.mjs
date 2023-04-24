@@ -26,7 +26,7 @@ console.log(
 
 // ======================================== CREATE FORMS ====================================
 
-function createItemForm() {
+function itemForm() {
   const content = document.querySelector("#content");
 
   const form = document.createElement("form");
@@ -100,7 +100,7 @@ function createItemForm() {
   return form;
 }
 
-function createEditForm(item, card) {
+function editItemForm(item, card) {
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -173,7 +173,7 @@ function createEditForm(item, card) {
       newDueDate,
       newIsDone
     );
-    card.replaceWith(await createCard(item));
+    card.replaceWith(await itemCard(item));
     e.target.reset();
     form.style.display = "none";
     await displayItems();
@@ -182,7 +182,7 @@ function createEditForm(item, card) {
   return form;
 }
 
-function createProjectForm() {
+function projectForm() {
   const content = document.querySelector("#content");
   const form = document.createElement("form");
   form.classList.add("form");
@@ -216,9 +216,38 @@ function createProjectForm() {
   return form;
 }
 
+function editProjectForm(project, card) {
+  const form = document.createElement("form");
+  form.classList.add("form");
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.name = "title";
+  titleInput.value = project.title;
+
+  const submitButton = document.createElement("button");
+  submitButton.type = "submit";
+  submitButton.textContent = "Update Project";
+
+  form.appendChild(titleInput);
+  form.appendChild(submitButton);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const newTitle = e.target.elements.title.value;
+    await ProjectModule.editProject(project, newTitle);
+    card.replaceWith(await projectCard(project));
+    e.target.reset();
+    form.style.display = "none";
+    await displayProjects();
+  });
+
+  return form;
+}
+
 // ===================================== CREATE TASKS/ITEMS ======================================
 
-async function createCard(item) {
+async function itemCard(item) {
   const card = document.createElement("div");
   card.classList.add("card");
 
@@ -255,7 +284,7 @@ async function createCard(item) {
   editLink.href = "#";
   editLink.textContent = "Edit";
   editLink.addEventListener("click", () => {
-    const editForm = createEditForm(item, card);
+    const editForm = editItemForm(item, card);
     card.replaceWith(editForm);
   });
 
@@ -264,6 +293,37 @@ async function createCard(item) {
   card.appendChild(description);
   card.appendChild(priority);
   card.appendChild(dueDate);
+  card.appendChild(deleteLink);
+  card.appendChild(editLink);
+
+  return card;
+}
+
+async function projectCard(project) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+
+  const title = document.createElement("h3");
+  title.textContent = project.title;
+
+  const deleteLink = document.createElement("a");
+  deleteLink.href = "#";
+  deleteLink.textContent = "Delete";
+  deleteLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    await ProjectModule.deleteProject(project);
+    card.remove();
+  });
+
+  const editLink = document.createElement("a");
+  editLink.href = "#";
+  editLink.textContent = "Edit";
+  editLink.addEventListener("click", () => {
+    const editForm = editProjectForm(project, card);
+    card.replaceWith(editForm);
+  });
+
+  card.appendChild(title);
   card.appendChild(deleteLink);
   card.appendChild(editLink);
 
@@ -279,7 +339,7 @@ async function displayItems() {
   const items = ItemModule.getAllItems();
 
   items.forEach(async (item) => {
-    const card = await createCard(item);
+    const card = await itemCard(item);
     content.appendChild(card);
   });
 
@@ -288,19 +348,16 @@ async function displayItems() {
 
 async function displayProjects() {
   const projectContainer = document.querySelector("#projectContainer");
-  projectContainer.innerHTML = "";
+  projectContainer.textContent = "";
 
   const projects = await ProjectModule.getAllProjects();
 
-  const ul = document.createElement("ul");
-
-  projects.forEach((project) => {
-    const li = document.createElement("li");
-    li.textContent = project.title;
-    ul.appendChild(li);
+  projects.forEach(async (project) => {
+    const card = await projectCard(project);
+    projectContainer.appendChild(card);
   });
 
-  projectContainer.appendChild(ul);
+  return projectContainer;
 }
 
 // ============================================ CONTROLLER =====================================
@@ -308,14 +365,12 @@ async function displayProjects() {
 function controller() {
   const newTaskBtn = document.querySelector("#newTaskBtn");
   newTaskBtn.addEventListener("click", () => {
-    console.log("Hi!");
-    createItemForm();
+    itemForm();
   });
 
   const newProjectBtn = document.querySelector("#newProjectBtn");
   newProjectBtn.addEventListener("click", () => {
-    console.log("Hi!");
-    createProjectForm();
+    projectForm();
   });
 }
 
