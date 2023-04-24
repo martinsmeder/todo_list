@@ -48,7 +48,7 @@ main #content .card {
     align-items: center;
 }
 
- main #content .card * { /* Target every div that is a child of .card */
+main #content .card * { /* Target every div that is a child of .card */
     padding-left: 20px;
 }
 
@@ -70,6 +70,16 @@ aside #allItems {
 aside #projects {
     display: flex;
     flex-direction: column;
+}
+
+aside #projects .card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+aside #projects .card * { /* Target every div that is a child of .card */
+    padding-left: 5px;
 }
 
 footer {
