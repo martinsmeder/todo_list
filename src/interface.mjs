@@ -1,40 +1,114 @@
 // Remember to uninstall npm install --save-dev babel-loader @babel/preset-env and change
 // webpack.config to src/index.js when done.
+// Get multi-file-debugging to work before starting next project and every project after that
 
 import {
-  ItemFactory,
-  ProjectFactory,
+  // ItemFactory,
+  // ProjectFactory,
   ItemModule,
   ProjectModule,
-  OrganizeModule,
+  // OrganizeModule,
   // eslint-disable-next-line import/extensions
 } from "./appLogic.mjs";
 
-console.log(
-  ItemFactory,
-  ProjectFactory,
-  ItemModule,
-  ProjectModule,
-  OrganizeModule
-);
-
 // TO DO:
-// 2. Get the projects to work --> step 4 (add new method to ProjectModule???)
+// 2. Separate logic in appLogic --> Think through how it should work --> Choice where to add item
+//    --> All items in home
 // 3. Get the home, daily, weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
 
-// =============================== PUT ME INTO A FUNCTION PLZ ==============================
-
-let currentProject = null;
-
 // ======================================== CREATE FORMS ====================================
 
-function itemForm() {
+// function itemForm() {
+//   const content = document.querySelector("#content");
+
+//   const form = document.createElement("form");
+//   form.classList.add("form");
+
+//   const titleInput = document.createElement("input");
+//   titleInput.type = "text";
+//   titleInput.name = "title";
+//   titleInput.placeholder = "Title";
+
+//   const descriptionInput = document.createElement("input");
+//   descriptionInput.type = "text";
+//   descriptionInput.name = "description";
+//   descriptionInput.placeholder = "Description";
+
+//   const priorityInput = document.createElement("select");
+//   priorityInput.name = "priority";
+
+//   const highOption = document.createElement("option");
+//   highOption.value = "High";
+//   highOption.text = "High";
+//   priorityInput.appendChild(highOption);
+
+//   const mediumOption = document.createElement("option");
+//   mediumOption.value = "Medium";
+//   mediumOption.text = "Medium";
+//   priorityInput.appendChild(mediumOption);
+
+//   const lowOption = document.createElement("option");
+//   lowOption.value = "Low";
+//   lowOption.text = "Low";
+//   priorityInput.appendChild(lowOption);
+
+//   const dueDateInput = document.createElement("input");
+//   dueDateInput.type = "date";
+//   dueDateInput.name = "dueDate";
+
+//   const isDoneInput = document.createElement("input");
+//   isDoneInput.type = "checkbox";
+//   isDoneInput.name = "isDone";
+//   const isDoneLabel = document.createElement("label");
+//   isDoneLabel.textContent = "Completed";
+//   isDoneLabel.appendChild(isDoneInput);
+
+//   const submitButton = document.createElement("button");
+//   submitButton.type = "submit";
+//   submitButton.textContent = "Create Item";
+
+//   form.appendChild(titleInput);
+//   form.appendChild(descriptionInput);
+//   form.appendChild(priorityInput);
+//   form.appendChild(dueDateInput);
+//   form.appendChild(isDoneLabel);
+//   form.appendChild(submitButton);
+
+//   form.addEventListener("submit", async (e) => {
+//     e.preventDefault();
+//     const title = e.target.elements.title.value;
+//     const description = e.target.elements.description.value;
+//     const priority = e.target.elements.priority.value;
+//     const dueDate = e.target.elements.dueDate.value;
+//     const isDone = e.target.elements.isDone.checked;
+//     await ItemModule.createItem(title, description, priority, dueDate, isDone);
+//     e.target.reset();
+//     form.style.display = "none";
+//     await displayItems();
+//   });
+
+//   content.appendChild(form);
+
+//   return form;
+// }
+
+function projectItemForm() {
   const content = document.querySelector("#content");
 
   const form = document.createElement("form");
   form.classList.add("form");
+
+  const projectSelect = document.createElement("select");
+  projectSelect.name = "project";
+
+  ProjectModule.getAllProjects().forEach((project) => {
+    const option = document.createElement("option");
+    option.value = project.title;
+    option.text = project.title;
+    projectSelect.appendChild(option);
+  });
 
   const titleInput = document.createElement("input");
   titleInput.type = "text";
@@ -79,6 +153,7 @@ function itemForm() {
   submitButton.type = "submit";
   submitButton.textContent = "Create Item";
 
+  form.appendChild(projectSelect);
   form.appendChild(titleInput);
   form.appendChild(descriptionInput);
   form.appendChild(priorityInput);
@@ -88,15 +163,29 @@ function itemForm() {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const selectedProjectTitle = e.target.elements.project.value;
+    const selectedProject = ProjectModule.getAllProjects().find(
+      (project) => project.title === selectedProjectTitle
+    );
     const title = e.target.elements.title.value;
     const description = e.target.elements.description.value;
     const priority = e.target.elements.priority.value;
     const dueDate = e.target.elements.dueDate.value;
     const isDone = e.target.elements.isDone.checked;
-    await ItemModule.createItem(title, description, priority, dueDate, isDone);
+    console.log(selectedProject);
+    console.log(title, description, priority, dueDate, isDone);
+    await ProjectModule.addProjectItem(
+      selectedProject,
+      title,
+      description,
+      priority,
+      dueDate,
+      isDone
+    );
     e.target.reset();
     form.style.display = "none";
-    await displayItems();
+    // console.log(ProjectModule.projectArray);
+    // await displayItems();
   });
 
   content.appendChild(form);
@@ -371,17 +460,16 @@ async function displayProjects() {
 
 // ============================================ CONTROLLER =====================================
 
-function controller() {
+function controller(project) {
   const homeBtn = document.querySelector("#allItems a:first-child");
   homeBtn.addEventListener("click", async () => {
-    currentProject = null;
-    console.log(currentProject);
     await displayItems();
   });
 
   const newTaskBtn = document.querySelector("#newTaskBtn");
   newTaskBtn.addEventListener("click", () => {
-    itemForm();
+    // itemForm();
+    projectItemForm(project);
   });
 
   const newProjectBtn = document.querySelector("#newProjectBtn");
