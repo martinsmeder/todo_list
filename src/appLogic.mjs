@@ -110,6 +110,9 @@ export const ProjectModule = (() => {
 
   const getAllProjects = () => projectArray;
 
+  const getProjectByTitle = (title) =>
+    ProjectModule.getAllProjects().find((project) => project.title === title);
+
   return {
     projectArray,
     createProject,
@@ -118,6 +121,7 @@ export const ProjectModule = (() => {
     addProjectItem,
     deleteProjectItem,
     getAllProjects,
+    getProjectByTitle,
   };
 })();
 

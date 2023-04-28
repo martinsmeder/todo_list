@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 // Remember to uninstall npm install --save-dev babel-loader @babel/preset-env and change
 // webpack.config to src/index.js when done.
 // Get multi-file-debugging to work before starting next project and every project after that
@@ -12,8 +13,8 @@ import {
 } from "./appLogic.mjs";
 
 // TO DO:
-// 2. Separate logic in appLogic --> Think through how it should work --> Choice where to add item
-//    --> All items in home
+// 2. Think through how it should work --> Choice where to add item
+//    --> Fix display --> All items in home
 // 3. Get the home, daily, weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
@@ -164,15 +165,14 @@ function projectItemForm() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const selectedProjectTitle = e.target.elements.project.value;
-    const selectedProject = ProjectModule.getAllProjects().find(
-      (project) => project.title === selectedProjectTitle
-    );
+    const selectedProject =
+      ProjectModule.getProjectByTitle(selectedProjectTitle);
     const title = e.target.elements.title.value;
     const description = e.target.elements.description.value;
     const priority = e.target.elements.priority.value;
     const dueDate = e.target.elements.dueDate.value;
     const isDone = e.target.elements.isDone.checked;
-    console.log(selectedProject);
+    console.table(selectedProject);
     console.log(title, description, priority, dueDate, isDone);
     await ProjectModule.addProjectItem(
       selectedProject,
@@ -185,7 +185,7 @@ function projectItemForm() {
     e.target.reset();
     form.style.display = "none";
     // console.log(ProjectModule.projectArray);
-    // await displayItems();
+    await displayItems();
   });
 
   content.appendChild(form);
@@ -398,11 +398,6 @@ async function projectCard(project) {
 
   const title = document.createElement("h3");
   title.textContent = project.title;
-  title.addEventListener("click", async () => {
-    const projectId = title.parentElement.dataset.id;
-    currentProject = projectId;
-    console.log(currentProject);
-  });
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
