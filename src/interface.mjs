@@ -13,89 +13,13 @@ import {
 } from "./appLogic.mjs";
 
 // TO DO:
-// 2. Think through how it should work --> Choice where to add item
-//    --> Fix display --> All items in home
-// 3. Get the home, daily, weekly to work
+// 3. Get the daily and weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
 
 // ======================================== CREATE FORMS ====================================
 
-// function itemForm() {
-//   const content = document.querySelector("#content");
-
-//   const form = document.createElement("form");
-//   form.classList.add("form");
-
-//   const titleInput = document.createElement("input");
-//   titleInput.type = "text";
-//   titleInput.name = "title";
-//   titleInput.placeholder = "Title";
-
-//   const descriptionInput = document.createElement("input");
-//   descriptionInput.type = "text";
-//   descriptionInput.name = "description";
-//   descriptionInput.placeholder = "Description";
-
-//   const priorityInput = document.createElement("select");
-//   priorityInput.name = "priority";
-
-//   const highOption = document.createElement("option");
-//   highOption.value = "High";
-//   highOption.text = "High";
-//   priorityInput.appendChild(highOption);
-
-//   const mediumOption = document.createElement("option");
-//   mediumOption.value = "Medium";
-//   mediumOption.text = "Medium";
-//   priorityInput.appendChild(mediumOption);
-
-//   const lowOption = document.createElement("option");
-//   lowOption.value = "Low";
-//   lowOption.text = "Low";
-//   priorityInput.appendChild(lowOption);
-
-//   const dueDateInput = document.createElement("input");
-//   dueDateInput.type = "date";
-//   dueDateInput.name = "dueDate";
-
-//   const isDoneInput = document.createElement("input");
-//   isDoneInput.type = "checkbox";
-//   isDoneInput.name = "isDone";
-//   const isDoneLabel = document.createElement("label");
-//   isDoneLabel.textContent = "Completed";
-//   isDoneLabel.appendChild(isDoneInput);
-
-//   const submitButton = document.createElement("button");
-//   submitButton.type = "submit";
-//   submitButton.textContent = "Create Item";
-
-//   form.appendChild(titleInput);
-//   form.appendChild(descriptionInput);
-//   form.appendChild(priorityInput);
-//   form.appendChild(dueDateInput);
-//   form.appendChild(isDoneLabel);
-//   form.appendChild(submitButton);
-
-//   form.addEventListener("submit", async (e) => {
-//     e.preventDefault();
-//     const title = e.target.elements.title.value;
-//     const description = e.target.elements.description.value;
-//     const priority = e.target.elements.priority.value;
-//     const dueDate = e.target.elements.dueDate.value;
-//     const isDone = e.target.elements.isDone.checked;
-//     await ItemModule.createItem(title, description, priority, dueDate, isDone);
-//     e.target.reset();
-//     form.style.display = "none";
-//     await displayItems();
-//   });
-
-//   content.appendChild(form);
-
-//   return form;
-// }
-
-function projectItemForm() {
+function itemForm() {
   const content = document.querySelector("#content");
 
   const form = document.createElement("form");
@@ -110,6 +34,11 @@ function projectItemForm() {
     option.text = project.title;
     projectSelect.appendChild(option);
   });
+
+  const noProjectOption = document.createElement("option");
+  noProjectOption.value = "noProject";
+  noProjectOption.text = "No project";
+  projectSelect.appendChild(noProjectOption);
 
   const titleInput = document.createElement("input");
   titleInput.type = "text";
@@ -172,20 +101,32 @@ function projectItemForm() {
     const priority = e.target.elements.priority.value;
     const dueDate = e.target.elements.dueDate.value;
     const isDone = e.target.elements.isDone.checked;
-    console.table(selectedProject);
+    console.log(selectedProject);
     console.log(title, description, priority, dueDate, isDone);
-    await ProjectModule.addProjectItem(
-      selectedProject,
-      title,
-      description,
-      priority,
-      dueDate,
-      isDone
-    );
-    e.target.reset();
-    form.style.display = "none";
-    // console.log(ProjectModule.projectArray);
-    await displayItems();
+    if (selectedProjectTitle === "noProject") {
+      await ItemModule.createItem(
+        title,
+        description,
+        priority,
+        dueDate,
+        isDone
+      );
+      e.target.reset();
+      form.style.display = "none";
+      await displayItems();
+    } else if (selectedProject) {
+      await ProjectModule.addProjectItem(
+        selectedProject,
+        title,
+        description,
+        priority,
+        dueDate,
+        isDone
+      );
+      e.target.reset();
+      form.style.display = "none";
+      await displayProjectItems(selectedProject);
+    }
   });
 
   content.appendChild(form);
@@ -398,6 +339,10 @@ async function projectCard(project) {
 
   const title = document.createElement("h3");
   title.textContent = project.title;
+  title.addEventListener("click", () => {
+    console.log(project);
+    displayProjectItems(project);
+  });
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
@@ -439,6 +384,29 @@ async function displayItems() {
   return content;
 }
 
+async function displayAllItems() {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const projects = await ProjectModule.getAllProjects();
+
+  projects.forEach((project) => {
+    project.array.forEach(async (item) => {
+      const card = await itemCard(item);
+      content.appendChild(card);
+    });
+  });
+
+  const items = await ItemModule.getAllItems();
+
+  items.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+
+  return content;
+}
+
 async function displayProjects() {
   const projectContainer = document.querySelector("#projectContainer");
   projectContainer.textContent = "";
@@ -453,18 +421,31 @@ async function displayProjects() {
   return projectContainer;
 }
 
+async function displayProjectItems(project) {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const items = project.array;
+
+  items.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+
+  return content;
+}
+
 // ============================================ CONTROLLER =====================================
 
 function controller(project) {
   const homeBtn = document.querySelector("#allItems a:first-child");
   homeBtn.addEventListener("click", async () => {
-    await displayItems();
+    await displayAllItems();
   });
 
   const newTaskBtn = document.querySelector("#newTaskBtn");
   newTaskBtn.addEventListener("click", () => {
-    // itemForm();
-    projectItemForm(project);
+    itemForm(project);
   });
 
   const newProjectBtn = document.querySelector("#newProjectBtn");
