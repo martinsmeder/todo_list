@@ -8,7 +8,7 @@ import {
   // ProjectFactory,
   ItemModule,
   ProjectModule,
-  // OrganizeModule,
+  OrganizeModule,
   // eslint-disable-next-line import/extensions
 } from "./appLogic.mjs";
 
@@ -99,7 +99,8 @@ function itemForm() {
     const title = e.target.elements.title.value;
     const description = e.target.elements.description.value;
     const priority = e.target.elements.priority.value;
-    const dueDate = e.target.elements.dueDate.value;
+    const dueDate = new Date(e.target.elements.dueDate.value);
+    dueDate.setHours(0, 0, 0, 0);
     const isDone = e.target.elements.isDone.checked;
     console.log(selectedProject);
     console.log(title, description, priority, dueDate, isDone);
@@ -197,7 +198,8 @@ function editItemForm(item, card) {
     const newTitle = e.target.elements.title.value;
     const newDescription = e.target.elements.description.value;
     const newPriority = e.target.elements.priority.value;
-    const newDueDate = e.target.elements.dueDate.value;
+    const newDueDate = new Date(e.target.elements.dueDate.value);
+    newDueDate.setHours(0, 0, 0, 0);
     const newIsDone = e.target.elements.isDone.checked;
     await ItemModule.editItem(
       item,
@@ -303,7 +305,7 @@ async function itemCard(item) {
   priority.textContent = `Priority: ${item.priority}`;
 
   const dueDate = document.createElement("p");
-  dueDate.textContent = `Due Date: ${item.dueDate}`;
+  dueDate.textContent = `Due Date: ${item.dueDate.toLocaleDateString()}`;
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
@@ -389,6 +391,7 @@ async function displayAllItems() {
   content.textContent = "";
 
   const projects = await ProjectModule.getAllProjects();
+  console.log(ProjectModule.getAllProjects());
 
   projects.forEach((project) => {
     project.array.forEach(async (item) => {
@@ -398,8 +401,41 @@ async function displayAllItems() {
   });
 
   const items = await ItemModule.getAllItems();
+  console.log(ItemModule.getAllItems());
 
   items.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+
+  return content;
+}
+
+async function displayDailyItems() {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const dailyItems = await OrganizeModule.getAllDailyItems();
+  console.log(OrganizeModule.getAllDailyItems());
+  console.log(OrganizeModule.isDueToday());
+
+  dailyItems.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+
+  return content;
+}
+
+async function displayWeeklyItems() {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const weeklyItems = await OrganizeModule.getAllWeeklyItems();
+  console.log(OrganizeModule.getAllWeeklyItems());
+  console.log(OrganizeModule.isDueThisWeek());
+
+  weeklyItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -440,7 +476,20 @@ async function displayProjectItems(project) {
 function controller(project) {
   const homeBtn = document.querySelector("#allItems a:first-child");
   homeBtn.addEventListener("click", async () => {
+    console.log("All items");
     await displayAllItems();
+  });
+
+  const dailyBtn = document.querySelector("#allItems a:nth-child(2)");
+  dailyBtn.addEventListener("click", async () => {
+    console.log("Daily");
+    await displayDailyItems();
+  });
+
+  const weeklyBtn = document.querySelector("#allItems a:nth-child(3)");
+  weeklyBtn.addEventListener("click", async () => {
+    console.log("Weekly");
+    await displayWeeklyItems();
   });
 
   const newTaskBtn = document.querySelector("#newTaskBtn");

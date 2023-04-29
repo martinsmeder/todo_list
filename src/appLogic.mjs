@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Factories
 export const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   title,
@@ -128,7 +129,9 @@ export const ProjectModule = (() => {
 export const OrganizeModule = (() => {
   // ============== Helper functions ===============
   const isDueToday = (dateString) => {
+    // console.log(`datestring: ${dateString}`);
     const today = new Date(); // Create a new Date object representing today's date.
+    today.setHours(0, 0, 0, 0); // Set time to midnight to reset the clock
     const date = new Date(dateString); // Create a new Date object from the dateString argument.
 
     // Check if the date's day, month, and year are equal to the current date's day, month, and year.
@@ -141,8 +144,10 @@ export const OrganizeModule = (() => {
   };
 
   const isDueThisWeek = (dateString) => {
+    // console.log(`datestring: ${dateString}`);
     const today = new Date(); // Create a new Date object from the dateString argument.
-    const date = new Date(dateString); // Create a new Date object from the dateString argument.
+    today.setHours(0, 0, 0, 0); // Set time to midnight to reset the clock
+    const date = new Date(Date.parse(dateString)); // Create a new Date object from the dateString argument.
     const endOfWeek = new Date( // Create a new Date object representing the end of the current week.
       today.getFullYear(),
       today.getMonth(),
@@ -210,6 +215,8 @@ export const OrganizeModule = (() => {
   };
 
   return {
+    isDueToday,
+    isDueThisWeek,
     getAllDailyItems,
     getAllWeeklyItems,
     sortByDate,
