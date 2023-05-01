@@ -30,6 +30,12 @@ main {
     border: 1px solid #000;
 }
 
+main #top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 main #newTaskBtn {
     width: 100px;
 }

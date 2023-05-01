@@ -28,7 +28,15 @@
   </aside>
     
   <main>
-    <button id="newTaskBtn">+ New Task</button>
+    <div id="top">
+      <select name="sort" id="sort">
+        <option value="dueDate">Due date</option>
+        <option value="priority">Priority</option>
+      </select>
+      <button id="newTaskBtn">+ New Task</button>
+      <h4>Current Place</h4>
+    </div>
+    
     <div id="content"></div>  
   </main>
 
