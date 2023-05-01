@@ -214,6 +214,16 @@ export const OrganizeModule = (() => {
     return allWeeklyItems;
   };
 
+  const getAllTotalItems = () => {
+    const allTotalItems = [...ItemModule.itemArray];
+
+    ProjectModule.projectArray.forEach((project) => {
+      allTotalItems.push(...project.array);
+    });
+
+    return allTotalItems;
+  };
+
   return {
     isDueToday,
     isDueThisWeek,
@@ -221,5 +231,47 @@ export const OrganizeModule = (() => {
     getAllWeeklyItems,
     sortByDate,
     sortByPriority,
+    getAllTotalItems,
   };
 })();
+
+const item1 = ItemModule.createItem(
+  "Item1",
+  "First item",
+  "medium",
+  new Date(2023, 4, 1),
+  false
+);
+const item2 = ItemModule.createItem(
+  "Item2",
+  "Second item",
+  "high",
+  new Date(2023, 4, 2),
+  false
+);
+
+const aProject = ProjectModule.createProject("aProject", []);
+
+const item3 = ProjectModule.addProjectItem(
+  aProject,
+  "Item3",
+  "Third item",
+  "medium",
+  new Date(2023, 4, 1),
+  false
+);
+const item4 = ProjectModule.addProjectItem(
+  aProject,
+  "Item4",
+  "Fourth item",
+  "high",
+  new Date(2023, 4, 2),
+  false
+);
+
+// console.table(
+//   OrganizeModule.sortByDate([...ItemModule.itemArray, ...aProject.array])
+// );
+// console.table(
+//   OrganizeModule.sortByPriority([...ItemModule.itemArray, ...aProject.array])
+// );

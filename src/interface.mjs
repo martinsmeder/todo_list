@@ -13,9 +13,12 @@ import {
 } from "./appLogic.mjs";
 
 // TO DO:
-// 3. Get the daily and weekly to work
 // 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
+
+// ================================== PUT ME IN A FUNCTION PLZ =============================
+
+let currentItems = [];
 
 // ======================================== CREATE FORMS ====================================
 
@@ -54,18 +57,18 @@ function itemForm() {
   priorityInput.name = "priority";
 
   const highOption = document.createElement("option");
-  highOption.value = "High";
-  highOption.text = "High";
+  highOption.value = "high";
+  highOption.text = "high";
   priorityInput.appendChild(highOption);
 
   const mediumOption = document.createElement("option");
-  mediumOption.value = "Medium";
-  mediumOption.text = "Medium";
+  mediumOption.value = "medium";
+  mediumOption.text = "medium";
   priorityInput.appendChild(mediumOption);
 
   const lowOption = document.createElement("option");
-  lowOption.value = "Low";
-  lowOption.text = "Low";
+  lowOption.value = "low";
+  lowOption.text = "low";
   priorityInput.appendChild(lowOption);
 
   const dueDateInput = document.createElement("input");
@@ -114,7 +117,7 @@ function itemForm() {
       );
       e.target.reset();
       form.style.display = "none";
-      await displayItems();
+      await displayAllItems();
     } else if (selectedProject) {
       await ProjectModule.addProjectItem(
         selectedProject,
@@ -153,18 +156,18 @@ function editItemForm(item, card) {
   priorityInput.name = "priority";
 
   const highOption = document.createElement("option");
-  highOption.value = "High";
-  highOption.text = "High";
+  highOption.value = "high";
+  highOption.text = "high";
   priorityInput.appendChild(highOption);
 
   const mediumOption = document.createElement("option");
-  mediumOption.value = "Medium";
-  mediumOption.text = "Medium";
+  mediumOption.value = "medium";
+  mediumOption.text = "medium";
   priorityInput.appendChild(mediumOption);
 
   const lowOption = document.createElement("option");
-  lowOption.value = "Low";
-  lowOption.text = "Low";
+  lowOption.value = "low";
+  lowOption.text = "low";
   priorityInput.appendChild(lowOption);
 
   priorityInput.value = item.priority;
@@ -212,7 +215,7 @@ function editItemForm(item, card) {
     card.replaceWith(await itemCard(item));
     e.target.reset();
     form.style.display = "none";
-    await displayItems();
+    await displayAllItems();
   });
 
   return form;
@@ -292,7 +295,7 @@ async function itemCard(item) {
   isDone.checked = item.isDone;
   isDone.addEventListener("click", async () => {
     await ItemModule.toggleIsDone(item);
-    displayItems();
+    displayAllItems();
   });
 
   const title = document.createElement("h3");
@@ -372,38 +375,13 @@ async function projectCard(project) {
 
 // ========================================= DISPLAY STUFF =====================================
 
-async function displayItems() {
-  const content = document.querySelector("#content");
-  content.textContent = "";
-
-  const items = ItemModule.getAllItems();
-
-  items.forEach(async (item) => {
-    const card = await itemCard(item);
-    content.appendChild(card);
-  });
-
-  return content;
-}
-
 async function displayAllItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  const projects = await ProjectModule.getAllProjects();
-  console.log(ProjectModule.getAllProjects());
+  currentItems = await OrganizeModule.getAllTotalItems();
 
-  projects.forEach((project) => {
-    project.array.forEach(async (item) => {
-      const card = await itemCard(item);
-      content.appendChild(card);
-    });
-  });
-
-  const items = await ItemModule.getAllItems();
-  console.log(ItemModule.getAllItems());
-
-  items.forEach(async (item) => {
+  currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -415,11 +393,9 @@ async function displayDailyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  const dailyItems = await OrganizeModule.getAllDailyItems();
-  console.log(OrganizeModule.getAllDailyItems());
-  console.log(OrganizeModule.isDueToday());
+  currentItems = await OrganizeModule.getAllDailyItems();
 
-  dailyItems.forEach(async (item) => {
+  currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -431,11 +407,9 @@ async function displayWeeklyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  const weeklyItems = await OrganizeModule.getAllWeeklyItems();
-  console.log(OrganizeModule.getAllWeeklyItems());
-  console.log(OrganizeModule.isDueThisWeek());
+  currentItems = await OrganizeModule.getAllWeeklyItems();
 
-  weeklyItems.forEach(async (item) => {
+  currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -461,9 +435,9 @@ async function displayProjectItems(project) {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  const items = project.array;
+  currentItems = project.array;
 
-  items.forEach(async (item) => {
+  currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -471,25 +445,66 @@ async function displayProjectItems(project) {
   return content;
 }
 
+async function displayByDate(project) {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  let sortedItems = OrganizeModule.sortByDate(currentItems);
+
+  if (project) {
+    sortedItems = [...sortedItems, ...project.array];
+  }
+
+  sortedItems.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+}
+
+async function displayByPriority(project) {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  let sortedItems = OrganizeModule.sortByPriority(currentItems);
+
+  if (project) {
+    sortedItems = [...sortedItems, ...project.array];
+  }
+
+  sortedItems.forEach(async (item) => {
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+}
+
 // ============================================ CONTROLLER =====================================
 
-function controller(project) {
+async function controller(project) {
   const homeBtn = document.querySelector("#allItems a:first-child");
   homeBtn.addEventListener("click", async () => {
-    console.log("All items");
     await displayAllItems();
   });
 
   const dailyBtn = document.querySelector("#allItems a:nth-child(2)");
   dailyBtn.addEventListener("click", async () => {
-    console.log("Daily");
     await displayDailyItems();
   });
 
   const weeklyBtn = document.querySelector("#allItems a:nth-child(3)");
   weeklyBtn.addEventListener("click", async () => {
-    console.log("Weekly");
     await displayWeeklyItems();
+  });
+
+  const sortSelect = document.querySelector("#sort");
+  sortSelect.addEventListener("change", async (e) => {
+    const selectedOption = e.target.value;
+    if (selectedOption === "dueDate") {
+      console.log("due date");
+      await displayByDate(project, currentItems);
+    } else if (selectedOption === "priority") {
+      console.log("priority");
+      await displayByPriority(project, currentItems);
+    }
   });
 
   const newTaskBtn = document.querySelector("#newTaskBtn");
@@ -503,4 +518,6 @@ function controller(project) {
   });
 }
 
+displayAllItems();
+displayProjects();
 controller();
