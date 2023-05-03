@@ -158,18 +158,6 @@ export const OrganizeModule = (() => {
   };
 
   // =================== Methods ====================
-  const sortByDate = (items) =>
-    // Sort the items in place
-    items.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-
-  const sortByPriority = (items) => {
-    const priorities = ["high", "medium", "low"];
-    // Sort the items in place
-    return items.sort(
-      (a, b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
-    );
-  };
-
   const getAllDailyItems = () => {
     const allDailyItems = [];
 
@@ -229,11 +217,25 @@ export const OrganizeModule = (() => {
     isDueThisWeek,
     getAllDailyItems,
     getAllWeeklyItems,
-    sortByDate,
-    sortByPriority,
     getAllTotalItems,
   };
 })();
+
+// Tests...
+const item1 = ItemModule.createItem(
+  "Item1",
+  "First item",
+  "medium",
+  new Date(2023, 4, 3),
+  false
+);
+const item2 = ItemModule.createItem(
+  "Item2",
+  "Second item",
+  "high",
+  new Date(2023, 4, 4),
+  false
+);
 
 const aProject = ProjectModule.createProject("aProject", []);
 
@@ -253,8 +255,3 @@ const item4 = ProjectModule.addProjectItem(
   new Date(2023, 4, 4),
   false
 );
-
-console.log("Sorted by date: ");
-console.table(OrganizeModule.sortByDate([...aProject.array]));
-console.log("Sorted by priority: ");
-console.table(OrganizeModule.sortByPriority([...aProject.array]));
