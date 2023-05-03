@@ -235,21 +235,6 @@ export const OrganizeModule = (() => {
   };
 })();
 
-const item1 = ItemModule.createItem(
-  "Item1",
-  "First item",
-  "medium",
-  new Date(2023, 4, 1),
-  false
-);
-const item2 = ItemModule.createItem(
-  "Item2",
-  "Second item",
-  "high",
-  new Date(2023, 4, 2),
-  false
-);
-
 const aProject = ProjectModule.createProject("aProject", []);
 
 const item3 = ProjectModule.addProjectItem(
@@ -257,7 +242,7 @@ const item3 = ProjectModule.addProjectItem(
   "Item3",
   "Third item",
   "medium",
-  new Date(2023, 4, 1),
+  new Date(2023, 4, 3),
   false
 );
 const item4 = ProjectModule.addProjectItem(
@@ -265,13 +250,11 @@ const item4 = ProjectModule.addProjectItem(
   "Item4",
   "Fourth item",
   "high",
-  new Date(2023, 4, 2),
+  new Date(2023, 4, 4),
   false
 );
 
-// console.table(
-//   OrganizeModule.sortByDate([...ItemModule.itemArray, ...aProject.array])
-// );
-// console.table(
-//   OrganizeModule.sortByPriority([...ItemModule.itemArray, ...aProject.array])
-// );
+console.log("Sorted by date: ");
+console.table(OrganizeModule.sortByDate([...aProject.array]));
+console.log("Sorted by priority: ");
+console.table(OrganizeModule.sortByPriority([...aProject.array]));

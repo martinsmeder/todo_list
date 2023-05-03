@@ -18,7 +18,7 @@ import {
 
 // ================================== PUT ME IN A FUNCTION PLZ =============================
 
-let currentItems = [];
+// let currentItems = [];
 
 // ======================================== CREATE FORMS ====================================
 
@@ -344,10 +344,10 @@ async function projectCard(project) {
 
   const title = document.createElement("h3");
   title.textContent = project.title;
-  title.addEventListener("click", () => {
-    console.log(project);
-    displayProjectItems(project);
-  });
+  // title.addEventListener("click", async () => {
+  //   console.log(project);
+  //   displayProjectItems(project);
+  // });
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
@@ -379,42 +379,45 @@ async function displayAllItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  currentItems = await OrganizeModule.getAllTotalItems();
+  const currentItems = await OrganizeModule.getAllTotalItems();
 
   currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
 
-  return content;
+  // return content;
+  return currentItems;
 }
 
 async function displayDailyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  currentItems = await OrganizeModule.getAllDailyItems();
+  const currentItems = await OrganizeModule.getAllDailyItems();
 
   currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
 
-  return content;
+  // return content;
+  return currentItems;
 }
 
 async function displayWeeklyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  currentItems = await OrganizeModule.getAllWeeklyItems();
+  const currentItems = await OrganizeModule.getAllWeeklyItems();
 
   currentItems.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
 
-  return content;
+  // return content;
+  return currentItems;
 }
 
 async function displayProjects() {
@@ -435,9 +438,31 @@ async function displayProjectItems(project) {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  currentItems = project.array;
+  const currentItems = project.array;
+  console.log(`currentItems: ${currentItems}`);
 
   currentItems.forEach(async (item) => {
+    console.log(item);
+    const card = await itemCard(item);
+    content.appendChild(card);
+  });
+
+  return currentItems;
+}
+
+async function displayByDate(project, currentItems) {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  let sortedItems = OrganizeModule.sortByDate(Array.from(currentItems));
+
+  if (project && project.array) {
+    console.log(`Project: ${project}`);
+    sortedItems = [...sortedItems, ...project.array];
+  }
+
+  sortedItems.forEach(async (item) => {
+    console.log(item);
     const card = await itemCard(item);
     content.appendChild(card);
   });
@@ -445,54 +470,60 @@ async function displayProjectItems(project) {
   return content;
 }
 
-async function displayByDate(project) {
+async function displayByPriority(project, currentItems) {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  let sortedItems = OrganizeModule.sortByDate(currentItems);
+  let sortedItems = OrganizeModule.sortByPriority(Array.from(currentItems));
 
-  if (project) {
+  if (project && project.array) {
+    console.log(`Project: ${project}`);
     sortedItems = [...sortedItems, ...project.array];
   }
 
   sortedItems.forEach(async (item) => {
+    console.log(item);
     const card = await itemCard(item);
     content.appendChild(card);
   });
-}
 
-async function displayByPriority(project) {
-  const content = document.querySelector("#content");
-  content.textContent = "";
-
-  let sortedItems = OrganizeModule.sortByPriority(currentItems);
-
-  if (project) {
-    sortedItems = [...sortedItems, ...project.array];
-  }
-
-  sortedItems.forEach(async (item) => {
-    const card = await itemCard(item);
-    content.appendChild(card);
-  });
+  return content;
 }
 
 // ============================================ CONTROLLER =====================================
 
 async function controller(project) {
+  let currentItems = [];
+  let currentProject = project;
+
+  currentItems = await displayAllItems();
+  displayProjects();
+
   const homeBtn = document.querySelector("#allItems a:first-child");
   homeBtn.addEventListener("click", async () => {
-    await displayAllItems();
+    currentItems = await displayAllItems();
   });
 
   const dailyBtn = document.querySelector("#allItems a:nth-child(2)");
   dailyBtn.addEventListener("click", async () => {
-    await displayDailyItems();
+    currentItems = await displayDailyItems();
   });
 
   const weeklyBtn = document.querySelector("#allItems a:nth-child(3)");
   weeklyBtn.addEventListener("click", async () => {
-    await displayWeeklyItems();
+    currentItems = await displayWeeklyItems();
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const projectTitles = document.querySelectorAll(
+      "#projectContainer > div > h3"
+    );
+    projectTitles.forEach((title) => {
+      title.addEventListener("click", () => {
+        currentProject = ProjectModule.getProjectByTitle(title.textContent);
+        currentItems = displayProjectItems(currentProject);
+      });
+    });
   });
 
   const sortSelect = document.querySelector("#sort");
@@ -516,8 +547,10 @@ async function controller(project) {
   newProjectBtn.addEventListener("click", () => {
     projectForm();
   });
+
+  // return currentItems;
 }
 
-displayAllItems();
-displayProjects();
+// displayAllItems();
+// displayProjects();
 controller();
