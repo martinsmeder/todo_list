@@ -30,14 +30,9 @@ main {
     border: 1px solid #000;
 }
 
-main #top {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-}
-
 main #newTaskBtn {
     width: 100px;
+    margin: 10px;
 }
 
 main #content {
@@ -45,17 +40,58 @@ main #content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
 }
 
 main #content .card {
-    width: 100%;
+    width: 95%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    box-shadow: 0 0 .2rem #000;
+}
+
+main #content .card .left {
+    height: 100%;
+    display: flex;
     align-items: center;
 }
 
-main #content .card * { /* Target every div that is a child of .card */
-    padding-left: 20px;
+main #content .card .left * { /* Target every div that is a child of .left */
+    padding-left: 10px;
+}
+
+main #content .card .right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+main #content .card .right * { /* Target every div that is a child of .right */
+    padding-right: 10px;
+}
+
+main #content .card .priority {
+    display: inline-block;
+    width: 5px;
+    height: 100%;
+    margin-right: 10px;
+    margin-left: -2px; 
+    transform: scaleX(0.6);
+}
+
+main #content .card .priority.low {
+    background-color: #66FF00;
+    box-shadow: 0 0 .1rem #66FF00;
+}
+
+main #content .card .priority.medium {
+    background-color: #FFA500;
+    box-shadow: 0 0 .1rem #FFA500;
+}
+
+main #content .card .priority.high {
+    background-color: #FF160C;
+    box-shadow: 0 0 .1rem #FF160C;
 }
 
 aside {
