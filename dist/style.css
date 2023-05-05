@@ -58,10 +58,6 @@ main #content .card * { /* Target every div that is a child of .card */
     padding-left: 20px;
 }
 
-main tr {
-    background: aqua;
-}
-
 aside {
     grid-column: 1 / 2; 
     grid-row: 2 / 3;
@@ -95,4 +91,89 @@ footer {
     justify-content: center;
     align-items: center;
     border-top: 1px solid #000;
+}
+
+/* ======================================== FORM ============================================ */
+.form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 5px;
+}
+
+.form input {
+    width: 30%;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 0 .5rem #000;
+}
+
+.form input:focus { /* Remove inner border */
+    outline: none;
+}
+
+.form button {
+    font-size: 1rem;
+    padding: 3px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: #FFF;
+    box-shadow: 0 0 .5rem #000;
+}
+
+.form button:hover {
+    cursor: pointer;
+}
+
+.form button:active {
+    transform: scale(1.1);
+}
+
+.form textarea {
+    width: 30%;
+    height: 100px; 
+    resize: vertical; 
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 0 .5rem #000;
+}
+
+.form textarea:focus { /* Remove inner border */
+    outline: none;
+}
+
+.form label {
+    display: flex;
+    align-items: center;
+}
+
+.form label input { 
+    width: 15px;
+    height: 15px;
+    margin-left: 10px;
+    accent-color: white;
+}
+
+.form select {
+    width: 30%;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #FFF;
+    box-shadow: 0 0 .5rem #000;
+}
+
+.form select:focus { /* Remove inner border */
+    outline: none;
 }

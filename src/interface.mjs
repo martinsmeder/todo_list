@@ -13,12 +13,7 @@ import {
 } from "./appLogic.mjs";
 
 // TO DO:
-// 4. Implement functionality to organize based on dueDate or priority
 // 4. Overlay and style
-
-// ================================== PUT ME IN A FUNCTION PLZ =============================
-
-// let currentItems = [];
 
 // ======================================== CREATE FORMS ====================================
 
@@ -27,6 +22,16 @@ function itemForm() {
 
   const form = document.createElement("form");
   form.classList.add("form");
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.name = "title";
+  titleInput.placeholder = "Title";
+  titleInput.required = true;
+
+  const descriptionArea = document.createElement("textarea");
+  descriptionArea.name = "description";
+  descriptionArea.placeholder = "Description";
 
   const projectSelect = document.createElement("select");
   projectSelect.name = "project";
@@ -40,40 +45,31 @@ function itemForm() {
 
   const noProjectOption = document.createElement("option");
   noProjectOption.value = "noProject";
-  noProjectOption.text = "No project";
+  noProjectOption.text = "No Project";
   projectSelect.appendChild(noProjectOption);
-
-  const titleInput = document.createElement("input");
-  titleInput.type = "text";
-  titleInput.name = "title";
-  titleInput.placeholder = "Title";
-
-  const descriptionInput = document.createElement("input");
-  descriptionInput.type = "text";
-  descriptionInput.name = "description";
-  descriptionInput.placeholder = "Description";
 
   const priorityInput = document.createElement("select");
   priorityInput.name = "priority";
 
-  const highOption = document.createElement("option");
-  highOption.value = "high";
-  highOption.text = "high";
-  priorityInput.appendChild(highOption);
+  const lowOption = document.createElement("option");
+  lowOption.value = "low";
+  lowOption.text = "Low Priority";
+  priorityInput.appendChild(lowOption);
 
   const mediumOption = document.createElement("option");
   mediumOption.value = "medium";
-  mediumOption.text = "medium";
+  mediumOption.text = "Medium Priority";
   priorityInput.appendChild(mediumOption);
 
-  const lowOption = document.createElement("option");
-  lowOption.value = "low";
-  lowOption.text = "low";
-  priorityInput.appendChild(lowOption);
+  const highOption = document.createElement("option");
+  highOption.value = "high";
+  highOption.text = "High Priority";
+  priorityInput.appendChild(highOption);
 
   const dueDateInput = document.createElement("input");
   dueDateInput.type = "date";
   dueDateInput.name = "dueDate";
+  dueDateInput.required = true;
 
   const isDoneInput = document.createElement("input");
   isDoneInput.type = "checkbox";
@@ -86,9 +82,9 @@ function itemForm() {
   submitButton.type = "submit";
   submitButton.textContent = "Create Item";
 
-  form.appendChild(projectSelect);
   form.appendChild(titleInput);
-  form.appendChild(descriptionInput);
+  form.appendChild(descriptionArea);
+  form.appendChild(projectSelect);
   form.appendChild(priorityInput);
   form.appendChild(dueDateInput);
   form.appendChild(isDoneLabel);
@@ -133,7 +129,7 @@ function itemForm() {
 
   content.appendChild(form);
 
-  return form;
+  return content;
 }
 
 function editItemForm(item, card) {
@@ -145,35 +141,34 @@ function editItemForm(item, card) {
   titleInput.name = "title";
   titleInput.value = item.title;
 
-  const descriptionInput = document.createElement("input");
-  descriptionInput.type = "text";
-  descriptionInput.name = "description";
-  descriptionInput.value = item.description;
+  const descriptionArea = document.createElement("textarea");
+  descriptionArea.name = "description";
+  descriptionArea.value = item.description;
 
   const priorityInput = document.createElement("select");
   priorityInput.name = "priority";
 
-  const highOption = document.createElement("option");
-  highOption.value = "high";
-  highOption.text = "high";
-  priorityInput.appendChild(highOption);
+  const lowOption = document.createElement("option");
+  lowOption.value = "low";
+  lowOption.text = "Low Priority";
+  priorityInput.appendChild(lowOption);
 
   const mediumOption = document.createElement("option");
   mediumOption.value = "medium";
-  mediumOption.text = "medium";
+  mediumOption.text = "Medium Priority";
   priorityInput.appendChild(mediumOption);
 
-  const lowOption = document.createElement("option");
-  lowOption.value = "low";
-  lowOption.text = "low";
-  priorityInput.appendChild(lowOption);
+  const highOption = document.createElement("option");
+  highOption.value = "high";
+  highOption.text = "High Priority";
+  priorityInput.appendChild(highOption);
 
   priorityInput.value = item.priority;
 
   const dueDateInput = document.createElement("input");
   dueDateInput.type = "date";
   dueDateInput.name = "dueDate";
-  dueDateInput.value = item.dueDate;
+  dueDateInput.value = item.dueDate.toISOString().slice(0, 10);
 
   const isDoneInput = document.createElement("input");
   isDoneInput.type = "checkbox";
@@ -188,7 +183,7 @@ function editItemForm(item, card) {
   submitButton.textContent = "Update Item";
 
   form.appendChild(titleInput);
-  form.appendChild(descriptionInput);
+  form.appendChild(descriptionArea);
   form.appendChild(priorityInput);
   form.appendChild(dueDateInput);
   form.appendChild(isDoneLabel);
@@ -213,6 +208,7 @@ function editItemForm(item, card) {
     card.replaceWith(await itemCard(item));
     e.target.reset();
     form.style.display = "none";
+
     await displayAllItems();
   });
 
@@ -221,21 +217,20 @@ function editItemForm(item, card) {
 
 function projectForm() {
   const content = document.querySelector("#content");
+
   const form = document.createElement("form");
   form.classList.add("form");
 
-  const titleLabel = document.createElement("label");
-  titleLabel.textContent = "Title:";
   const titleInput = document.createElement("input");
   titleInput.type = "text";
   titleInput.name = "title";
+  titleInput.placeholder = "Title";
   titleInput.required = true;
 
   const submitButton = document.createElement("button");
   submitButton.type = "submit";
   submitButton.textContent = "Create Project";
 
-  form.appendChild(titleLabel);
   form.appendChild(titleInput);
   form.appendChild(submitButton);
 
