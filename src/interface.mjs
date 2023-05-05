@@ -283,7 +283,24 @@ async function itemCard(item) {
   const card = document.createElement("div");
   card.classList.add("card");
 
+  const leftDiv = document.createElement("div");
+  leftDiv.classList.add("left");
+
+  const rightDiv = document.createElement("div");
+  rightDiv.classList.add("right");
+
+  const priority = document.createElement("div");
+  priority.classList.add("priority");
+  if (item.priority === "low") {
+    priority.classList.add("low");
+  } else if (item.priority === "medium") {
+    priority.classList.add("medium");
+  } else if (item.priority === "high") {
+    priority.classList.add("high");
+  }
+
   const isDone = document.createElement("input");
+  isDone.classList.add("left");
   isDone.type = "checkbox";
   isDone.checked = item.isDone;
   isDone.addEventListener("click", async () => {
@@ -291,17 +308,20 @@ async function itemCard(item) {
     displayAllItems();
   });
 
-  const title = document.createElement("h3");
+  const title = document.createElement("p");
   title.textContent = item.title;
 
-  const description = document.createElement("p");
-  description.textContent = item.description;
-
-  const priority = document.createElement("p");
-  priority.textContent = `Priority: ${item.priority}`;
-
   const dueDate = document.createElement("p");
-  dueDate.textContent = `Due Date: ${item.dueDate.toLocaleDateString()}`;
+  const options = { day: "numeric", month: "short", year: "2-digit" };
+  dueDate.textContent = item.dueDate.toLocaleDateString("en-US", options);
+
+  const editLink = document.createElement("a");
+  editLink.href = "#";
+  editLink.textContent = "Edit";
+  editLink.addEventListener("click", () => {
+    const editForm = editItemForm(item, card);
+    card.replaceWith(editForm);
+  });
 
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
@@ -312,21 +332,15 @@ async function itemCard(item) {
     card.remove();
   });
 
-  const editLink = document.createElement("a");
-  editLink.href = "#";
-  editLink.textContent = "Edit";
-  editLink.addEventListener("click", () => {
-    const editForm = editItemForm(item, card);
-    card.replaceWith(editForm);
-  });
+  leftDiv.appendChild(priority);
+  leftDiv.appendChild(isDone);
+  leftDiv.appendChild(title);
+  card.appendChild(leftDiv);
 
-  card.appendChild(isDone);
-  card.appendChild(title);
-  card.appendChild(description);
-  card.appendChild(priority);
-  card.appendChild(dueDate);
-  card.appendChild(deleteLink);
-  card.appendChild(editLink);
+  rightDiv.appendChild(dueDate);
+  rightDiv.appendChild(editLink);
+  rightDiv.appendChild(deleteLink);
+  card.appendChild(rightDiv);
 
   return card;
 }
@@ -341,6 +355,14 @@ async function projectCard(project) {
     displayProjectItems(project);
   });
 
+  const editLink = document.createElement("a");
+  editLink.href = "#";
+  editLink.textContent = "Edit";
+  editLink.addEventListener("click", () => {
+    const editForm = editProjectForm(project, card);
+    card.replaceWith(editForm);
+  });
+
   const deleteLink = document.createElement("a");
   deleteLink.href = "#";
   deleteLink.textContent = "Delete";
@@ -350,17 +372,9 @@ async function projectCard(project) {
     card.remove();
   });
 
-  const editLink = document.createElement("a");
-  editLink.href = "#";
-  editLink.textContent = "Edit";
-  editLink.addEventListener("click", () => {
-    const editForm = editProjectForm(project, card);
-    card.replaceWith(editForm);
-  });
-
   card.appendChild(title);
-  card.appendChild(deleteLink);
   card.appendChild(editLink);
+  card.appendChild(deleteLink);
 
   return card;
 }

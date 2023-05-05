@@ -236,22 +236,37 @@ const item2 = ItemModule.createItem(
   new Date(2023, 4, 4),
   false
 );
+const item3 = ItemModule.createItem(
+  "Item3",
+  "Third item",
+  "low",
+  new Date(2023, 4, 10),
+  false
+);
 
 const aProject = ProjectModule.createProject("aProject", []);
 
-const item3 = ProjectModule.addProjectItem(
-  aProject,
-  "Item3",
-  "Third item",
-  "medium",
-  new Date(2023, 4, 3),
-  false
-);
 const item4 = ProjectModule.addProjectItem(
   aProject,
   "Item4",
   "Fourth item",
+  "medium",
+  new Date(2023, 4, 3),
+  false
+);
+const item5 = ProjectModule.addProjectItem(
+  aProject,
+  "Item5",
+  "Fifth item",
   "high",
   new Date(2023, 4, 4),
+  false
+);
+const item6 = ProjectModule.addProjectItem(
+  aProject,
+  "Item6",
+  "Sixth item",
+  "low",
+  new Date(2023, 4, 10),
   false
 );
