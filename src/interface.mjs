@@ -349,7 +349,14 @@ async function projectCard(project) {
   const card = document.createElement("div");
   card.classList.add("card");
 
-  const title = document.createElement("h3");
+  const leftDiv = document.createElement("div");
+  leftDiv.classList.add("left");
+
+  const rightDiv = document.createElement("div");
+  rightDiv.classList.add("right");
+
+  const title = document.createElement("a");
+  title.href = "#";
   title.textContent = project.title;
   title.addEventListener("click", async () => {
     displayProjectItems(project);
@@ -372,9 +379,13 @@ async function projectCard(project) {
     card.remove();
   });
 
-  card.appendChild(title);
-  card.appendChild(editLink);
-  card.appendChild(deleteLink);
+  leftDiv.appendChild(title);
+
+  rightDiv.appendChild(editLink);
+  rightDiv.appendChild(deleteLink);
+
+  card.appendChild(leftDiv);
+  card.appendChild(rightDiv);
 
   return card;
 }
