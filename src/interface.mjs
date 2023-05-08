@@ -315,18 +315,16 @@ async function itemCard(item) {
   const options = { day: "numeric", month: "short", year: "2-digit" };
   dueDate.textContent = item.dueDate.toLocaleDateString("en-US", options);
 
-  const editLink = document.createElement("a");
-  editLink.href = "#";
-  editLink.textContent = "Edit";
-  editLink.addEventListener("click", () => {
+  const editIcon = document.createElement("img");
+  editIcon.src = "images/edit.png";
+  editIcon.addEventListener("click", () => {
     const editForm = editItemForm(item, card);
     card.replaceWith(editForm);
   });
 
-  const deleteLink = document.createElement("a");
-  deleteLink.href = "#";
-  deleteLink.textContent = "Delete";
-  deleteLink.addEventListener("click", async (e) => {
+  const deleteIcon = document.createElement("img");
+  deleteIcon.src = "images/delete.png";
+  deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
     await ItemModule.deleteItem(item);
     card.remove();
@@ -338,8 +336,8 @@ async function itemCard(item) {
   card.appendChild(leftDiv);
 
   rightDiv.appendChild(dueDate);
-  rightDiv.appendChild(editLink);
-  rightDiv.appendChild(deleteLink);
+  rightDiv.appendChild(editIcon);
+  rightDiv.appendChild(deleteIcon);
   card.appendChild(rightDiv);
 
   return card;
@@ -362,18 +360,16 @@ async function projectCard(project) {
     displayProjectItems(project);
   });
 
-  const editLink = document.createElement("a");
-  editLink.href = "#";
-  editLink.textContent = "Edit";
-  editLink.addEventListener("click", () => {
+  const editIcon = document.createElement("img");
+  editIcon.src = "images/edit.png";
+  editIcon.addEventListener("click", () => {
     const editForm = editProjectForm(project, card);
     card.replaceWith(editForm);
   });
 
-  const deleteLink = document.createElement("a");
-  deleteLink.href = "#";
-  deleteLink.textContent = "Delete";
-  deleteLink.addEventListener("click", async (e) => {
+  const deleteIcon = document.createElement("img");
+  deleteIcon.src = "images/delete.png";
+  deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
     await ProjectModule.deleteProject(project);
     card.remove();
@@ -381,8 +377,8 @@ async function projectCard(project) {
 
   leftDiv.appendChild(title);
 
-  rightDiv.appendChild(editLink);
-  rightDiv.appendChild(deleteLink);
+  rightDiv.appendChild(editIcon);
+  rightDiv.appendChild(deleteIcon);
 
   card.appendChild(leftDiv);
   card.appendChild(rightDiv);
