@@ -357,7 +357,14 @@ async function projectCard(project) {
   title.href = "#";
   title.textContent = project.title;
   title.addEventListener("click", async () => {
-    displayProjectItems(project);
+    const allCards = document.querySelectorAll("#projectContainer > .card");
+    // eslint-disable-next-line no-shadow
+    allCards.forEach((card) => {
+      card.classList.remove("active");
+    });
+    card.classList.add("active");
+
+    await displayProjectItems(project);
   });
 
   const editIcon = document.createElement("img");
@@ -464,18 +471,42 @@ async function controller(project) {
   displayAllItems();
   displayProjects();
 
-  const homeBtn = document.querySelector("#allItems a:first-child");
-  homeBtn.addEventListener("click", async () => {
+  const allLinks = document.querySelectorAll("#allItems a");
+  allLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      // eslint-disable-next-line no-shadow
+      allLinks.forEach((link) => {
+        link.classList.remove("active");
+      });
+      e.target.classList.add("active");
+    });
+  });
+
+  const allProjects = document.querySelectorAll(".card");
+  allProjects.forEach((card) => {
+    card.addEventListener("click", (e) => {
+      // eslint-disable-next-line no-shadow
+      allProjects.forEach((card) => {
+        card.classList.remove("active");
+      });
+      e.currentTarget.classList.add("active");
+    });
+  });
+
+  // #projectContainer > div
+
+  const homeLink = document.querySelector("#allItems a:first-child");
+  homeLink.addEventListener("click", async () => {
     await displayAllItems();
   });
 
-  const dailyBtn = document.querySelector("#allItems a:nth-child(2)");
-  dailyBtn.addEventListener("click", async () => {
+  const dailyLink = document.querySelector("#allItems a:nth-child(2)");
+  dailyLink.addEventListener("click", async () => {
     await displayDailyItems();
   });
 
-  const weeklyBtn = document.querySelector("#allItems a:nth-child(3)");
-  weeklyBtn.addEventListener("click", async () => {
+  const weeklyLink = document.querySelector("#allItems a:nth-child(3)");
+  weeklyLink.addEventListener("click", async () => {
     await displayWeeklyItems();
   });
 
