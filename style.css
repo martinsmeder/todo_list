@@ -216,6 +216,7 @@ aside #projects .card {
     padding: 2px;
     border: 1px solid #000;
     border-radius: 3px;
+    word-break: break-all; /* Keep long words inside the div*/
 }
 
 aside #projects .card.active {
