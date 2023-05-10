@@ -305,7 +305,7 @@ async function itemCard(item) {
   isDone.checked = item.isDone;
   isDone.addEventListener("click", async () => {
     await ItemModule.toggleIsDone(item);
-    displayAllItems();
+    // displayAllItems();
   });
 
   const title = document.createElement("p");
@@ -357,6 +357,11 @@ async function projectCard(project) {
   title.href = "#";
   title.textContent = project.title;
   title.addEventListener("click", async () => {
+    const allLinks = document.querySelectorAll("#allItems a");
+    allLinks.forEach((link) => {
+      link.classList.remove("active");
+    });
+
     const allCards = document.querySelectorAll("#projectContainer > .card");
     // eslint-disable-next-line no-shadow
     allCards.forEach((card) => {
@@ -398,6 +403,14 @@ async function projectCard(project) {
 async function displayAllItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
+
+  const allProjects = document.querySelectorAll(".card");
+  allProjects.forEach((card) => {
+    card.classList.remove("active");
+  });
+
+  const homeLink = document.querySelector("#allItems a:first-child");
+  homeLink.classList.add("active");
 
   const items = await OrganizeModule.getAllTotalItems();
 
@@ -479,21 +492,13 @@ async function controller(project) {
         link.classList.remove("active");
       });
       e.target.classList.add("active");
-    });
-  });
 
-  const allProjects = document.querySelectorAll(".card");
-  allProjects.forEach((card) => {
-    card.addEventListener("click", (e) => {
-      // eslint-disable-next-line no-shadow
+      const allProjects = document.querySelectorAll(".card");
       allProjects.forEach((card) => {
         card.classList.remove("active");
       });
-      e.currentTarget.classList.add("active");
     });
   });
-
-  // #projectContainer > div
 
   const homeLink = document.querySelector("#allItems a:first-child");
   homeLink.addEventListener("click", async () => {
