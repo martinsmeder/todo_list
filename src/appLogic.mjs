@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
 
-// Factories
+// ======================================== FACTORIES ========================================
 export const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   title,
   description,
@@ -15,7 +15,7 @@ export const ProjectFactory = (title, array = []) => ({
   array,
 });
 
-// Modules
+// ========================================= ITEM MODULE ======================================
 export const ItemModule = (() => {
   const itemArray = [];
 
@@ -85,6 +85,7 @@ export const ItemModule = (() => {
   };
 })();
 
+// ========================================== PROJECT MODULE ==================================
 export const ProjectModule = (() => {
   const projectArray = [];
 
@@ -171,8 +172,9 @@ export const ProjectModule = (() => {
   };
 })();
 
+// ========================================= ORGANIZE MODULE ==================================
 export const OrganizeModule = (() => {
-  // ============== Helper functions ===============
+  // ================ Helper functions ==============
   const isDueToday = (dateString) => {
     // console.log(`datestring: ${dateString}`);
     const today = new Date(); // Create a new Date object representing today's date.
@@ -202,7 +204,7 @@ export const OrganizeModule = (() => {
     return date >= today && date <= endOfWeek;
   };
 
-  // =================== Methods ====================
+  // ================== Methods ==============
   const getAllDailyItems = () => {
     const allDailyItems = [];
 
@@ -266,52 +268,83 @@ export const OrganizeModule = (() => {
   };
 })();
 
-// // Tests...
-// const item1 = ItemModule.createItem(
-//   "Item1",
-//   "First item",
-//   "medium",
-//   new Date(2023, 4, 11),
-//   false
-// );
-// const item2 = ItemModule.createItem(
-//   "Item2",
-//   "Second item",
-//   "high",
-//   new Date(2023, 4, 12),
-//   false
-// );
-// const item3 = ItemModule.createItem(
-//   "Item3",
-//   "Third item",
-//   "low",
-//   new Date(2023, 4, 13),
-//   false
-// );
+// ======================================== DUMMY ITEMS ======================================
+const today = new Date();
 
-// const aProject = ProjectModule.createProject("aProject", []);
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
 
-// const item4 = ProjectModule.addProjectItem(
-//   aProject,
-//   "Item4",
-//   "Fourth item",
-//   "medium",
-//   new Date(2023, 4, 11),
-//   false
-// );
-// const item5 = ProjectModule.addProjectItem(
-//   aProject,
-//   "Item5",
-//   "Fifth item",
-//   "high",
-//   new Date(2023, 4, 12),
-//   false
-// );
-// const item6 = ProjectModule.addProjectItem(
-//   aProject,
-//   "Item6",
-//   "Sixth item",
-//   "low",
-//   new Date(2023, 4, 13),
-//   false
-// );
+const twoDaysFromNow = new Date();
+twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
+
+const thirtyDaysFromNow = new Date();
+thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+const item1 = ItemFactory(
+  "Finish this lengthy todo list project",
+  "Some words",
+  "low",
+  today,
+  true
+);
+ItemModule.itemArray.push(item1);
+
+const item2 = ItemFactory(
+  "Buy snus and coffee to celebrate",
+  "Some words",
+  "medium",
+  tomorrow,
+  false
+);
+ItemModule.itemArray.push(item2);
+
+const item3 = ItemFactory(
+  "Ingest snus and coffee",
+  "Some words",
+  "high",
+  twoDaysFromNow,
+  false
+);
+ItemModule.itemArray.push(item3);
+
+const project1 = ProjectFactory("Merge with AI", []);
+ProjectModule.projectArray.push(project1);
+
+const item4 = ItemFactory(
+  "Acquire lots of money",
+  "Some words",
+  "low",
+  today,
+  false
+);
+project1.array.push(item4);
+
+const item5 = ItemFactory(
+  "Pre-order neuralink",
+  "Some words",
+  "medium",
+  tomorrow,
+  false
+);
+project1.array.push(item5);
+
+const item6 = ItemFactory(
+  "Profit",
+  "Some words",
+  "high",
+  twoDaysFromNow,
+  false
+);
+project1.array.push(item6);
+
+const project2 = ProjectFactory("Future thing", []);
+ProjectModule.projectArray.push(project2);
+
+const item7 = ItemFactory(
+  "The thing that never get done",
+  "Some words",
+  "low",
+  thirtyDaysFromNow,
+  false
+);
+project2.array.push(item7);

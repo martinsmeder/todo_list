@@ -13,7 +13,7 @@ body {
     min-height: 100vh;
     display: grid;
     justify-items: center;
-    grid-template-rows: 1fr 6fr 1fr;
+    grid-template-rows: 120px 1fr 120px;
     font-family: 'Ubuntu', sans-serif;
     box-shadow: 0 0 .9rem #000;
 }
@@ -429,8 +429,12 @@ footer a:nth-child(4) {
 @media (max-width: 600px) {
     * {
         overflow: hidden;
-    }
+    } 
     
+    body {
+        grid-template-rows: 90px 1fr 90px;
+    }
+
     header {
         font-size: 2rem;
         text-align: center;
@@ -440,24 +444,28 @@ footer a:nth-child(4) {
         text-align: center;
     }
 
-    main {
-        width: 100%;
-        border-right: none;
-    }
-
-    aside {
-        width: 100%;
-        border-left: none;
-    }
-
     #container {
         border-left: 2px solid #000;
         border-right: 2px solid #000;
         flex-direction: column;
     }
-    
+
+    main {
+        width: 100%;
+        border-right: none;
+        border-left: none;
+    }
+
+    main #content .card {
+        width: 90%;
+    }
+
     aside {
         height: auto;
+        width: 100%;
+        border-left: none;
+        border-right: none;
+        border-bottom: 2px solid #000;
     }
 
     aside #projects {
@@ -466,16 +474,34 @@ footer a:nth-child(4) {
 
     aside #projects #newProjectBtn {
         align-self: center;
+        margin-right: 0px;
     }
 
     main #newTaskBtn {
         align-self: center;
         margin-top: 0px;
+
     }
 }
 
 @media (max-width: 350px) {
     header {
         font-size: 1rem;
+    }
+
+    footer a {
+        font-size: 1rem;
+    }
+
+    footer a:nth-child(2) {
+        font-size: .7rem;
+    }
+    
+    footer a:nth-child(3) {
+        font-size: .7rem;
+    }
+    
+    footer a:nth-child(4) {
+        font-size: .7rem;
     }
 }
