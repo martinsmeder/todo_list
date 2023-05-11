@@ -1,23 +1,15 @@
 /* eslint-disable no-use-before-define */
-// Remember to uninstall npm install --save-dev babel-loader @babel/preset-env and change
-// webpack.config to src/index.js when done.
-// Get multi-file-debugging to work before starting next project and every project after that
 
 import {
-  // ItemFactory,
-  // ProjectFactory,
   ItemModule,
   ProjectModule,
   OrganizeModule,
   // eslint-disable-next-line import/extensions
 } from "./appLogic.mjs";
 
-// TO DO:
-// 4. Overlay and style
-
 // ======================================== CREATE FORMS ====================================
 
-function itemForm() {
+export function itemForm() {
   const content = document.querySelector("#content");
 
   const form = document.createElement("form");
@@ -132,7 +124,7 @@ function itemForm() {
   return content;
 }
 
-function editItemForm(item, card) {
+export function editItemForm(item, card) {
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -215,7 +207,7 @@ function editItemForm(item, card) {
   return form;
 }
 
-function projectForm() {
+export function projectForm() {
   const content = document.querySelector("#content");
 
   const form = document.createElement("form");
@@ -248,7 +240,7 @@ function projectForm() {
   return form;
 }
 
-function editProjectForm(project, card) {
+export function editProjectForm(project, card) {
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -279,7 +271,7 @@ function editProjectForm(project, card) {
 
 // ===================================== CREATE TASKS/ITEMS ======================================
 
-async function itemCard(item) {
+export async function itemCard(item) {
   const card = document.createElement("div");
   card.classList.add("card");
 
@@ -305,7 +297,6 @@ async function itemCard(item) {
   isDone.checked = item.isDone;
   isDone.addEventListener("click", async () => {
     await ItemModule.toggleIsDone(item);
-    // displayAllItems();
   });
 
   const title = document.createElement("p");
@@ -343,7 +334,7 @@ async function itemCard(item) {
   return card;
 }
 
-async function projectCard(project) {
+export async function projectCard(project) {
   const card = document.createElement("div");
   card.classList.add("card");
 
@@ -400,7 +391,7 @@ async function projectCard(project) {
 
 // ========================================= DISPLAY STUFF =====================================
 
-async function displayAllItems() {
+export async function displayAllItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
@@ -422,7 +413,7 @@ async function displayAllItems() {
   return content;
 }
 
-async function displayDailyItems() {
+export async function displayDailyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
@@ -436,7 +427,7 @@ async function displayDailyItems() {
   return content;
 }
 
-async function displayWeeklyItems() {
+export async function displayWeeklyItems() {
   const content = document.querySelector("#content");
   content.textContent = "";
 
@@ -450,7 +441,7 @@ async function displayWeeklyItems() {
   return content;
 }
 
-async function displayProjects() {
+export async function displayProjects() {
   const projectContainer = document.querySelector("#projectContainer");
   projectContainer.textContent = "";
 
@@ -464,7 +455,7 @@ async function displayProjects() {
   return projectContainer;
 }
 
-async function displayProjectItems(project) {
+export async function displayProjectItems(project) {
   const content = document.querySelector("#content");
   content.textContent = "";
 
@@ -477,53 +468,3 @@ async function displayProjectItems(project) {
 
   return content;
 }
-
-// ============================================ CONTROLLER =====================================
-
-async function controller(project) {
-  displayAllItems();
-  displayProjects();
-
-  const allLinks = document.querySelectorAll("#allItems a");
-  allLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-      // eslint-disable-next-line no-shadow
-      allLinks.forEach((link) => {
-        link.classList.remove("active");
-      });
-      e.target.classList.add("active");
-
-      const allProjects = document.querySelectorAll(".card");
-      allProjects.forEach((card) => {
-        card.classList.remove("active");
-      });
-    });
-  });
-
-  const homeLink = document.querySelector("#allItems a:first-child");
-  homeLink.addEventListener("click", async () => {
-    await displayAllItems();
-  });
-
-  const dailyLink = document.querySelector("#allItems a:nth-child(2)");
-  dailyLink.addEventListener("click", async () => {
-    await displayDailyItems();
-  });
-
-  const weeklyLink = document.querySelector("#allItems a:nth-child(3)");
-  weeklyLink.addEventListener("click", async () => {
-    await displayWeeklyItems();
-  });
-
-  const newTaskBtn = document.querySelector("#newTaskBtn");
-  newTaskBtn.addEventListener("click", () => {
-    itemForm(project);
-  });
-
-  const newProjectBtn = document.querySelector("#newProjectBtn");
-  newProjectBtn.addEventListener("click", () => {
-    projectForm();
-  });
-}
-
-controller();

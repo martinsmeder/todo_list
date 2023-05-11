@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 // Factories
 export const ItemFactory = (title, description, priority, dueDate, isDone) => ({
   title,
@@ -226,21 +227,21 @@ const item1 = ItemModule.createItem(
   "Item1",
   "First item",
   "medium",
-  new Date(2023, 4, 3),
+  new Date(2023, 4, 11),
   false
 );
 const item2 = ItemModule.createItem(
   "Item2",
   "Second item",
   "high",
-  new Date(2023, 4, 4),
+  new Date(2023, 4, 12),
   false
 );
 const item3 = ItemModule.createItem(
   "Item3",
   "Third item",
   "low",
-  new Date(2023, 4, 10),
+  new Date(2023, 4, 13),
   false
 );
 
@@ -251,7 +252,7 @@ const item4 = ProjectModule.addProjectItem(
   "Item4",
   "Fourth item",
   "medium",
-  new Date(2023, 4, 3),
+  new Date(2023, 4, 11),
   false
 );
 const item5 = ProjectModule.addProjectItem(
@@ -259,7 +260,7 @@ const item5 = ProjectModule.addProjectItem(
   "Item5",
   "Fifth item",
   "high",
-  new Date(2023, 4, 4),
+  new Date(2023, 4, 12),
   false
 );
 const item6 = ProjectModule.addProjectItem(
@@ -267,6 +268,6 @@ const item6 = ProjectModule.addProjectItem(
   "Item6",
   "Sixth item",
   "low",
-  new Date(2023, 4, 10),
+  new Date(2023, 4, 13),
   false
 );
