@@ -160,7 +160,10 @@ export function editItemForm(item, card) {
   const dueDateInput = document.createElement("input");
   dueDateInput.type = "date";
   dueDateInput.name = "dueDate";
-  dueDateInput.value = item.dueDate.toISOString().slice(0, 10);
+  // Convert dueDate to a valid Date object
+  const dueDate =
+    item.dueDate instanceof Date ? item.dueDate : new Date(item.dueDate);
+  dueDateInput.value = dueDate.toISOString().slice(0, 10);
 
   const isDoneInput = document.createElement("input");
   isDoneInput.type = "checkbox";
@@ -304,7 +307,14 @@ export async function itemCard(item) {
 
   const dueDate = document.createElement("p");
   const options = { day: "numeric", month: "short", year: "2-digit" };
-  dueDate.textContent = item.dueDate.toLocaleDateString("en-US", options);
+  if (typeof item.dueDate === "string") {
+    // Convert the string date to a Date object
+    const date = new Date(item.dueDate);
+    dueDate.textContent = date.toLocaleDateString("en-US", options);
+  } else {
+    // Assume the dueDate is already a Date object
+    dueDate.textContent = item.dueDate.toLocaleDateString("en-US", options);
+  }
 
   const editIcon = document.createElement("img");
   editIcon.src = "images/edit.png";

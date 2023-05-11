@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
 
 // Factories
@@ -21,6 +22,7 @@ export const ItemModule = (() => {
   const createItem = (title, description, priority, dueDate, isDone) => {
     const newItem = ItemFactory(title, description, priority, dueDate, isDone);
     itemArray.push(newItem);
+    saveItems(); // Save the updated itemArray
     return newItem;
   };
 
@@ -28,6 +30,7 @@ export const ItemModule = (() => {
     const index = itemArray.indexOf(item);
     if (index > -1) {
       itemArray.splice(index, 1);
+      saveItems(); // Save the updated itemArray after deletion
     }
   };
 
@@ -43,15 +46,34 @@ export const ItemModule = (() => {
     item.title = title;
     item.description = description;
     item.priority = priority;
-    item.dueDate = dueDate;
+    item.dueDate = new Date(dueDate);
     item.isDone = isDone;
+    saveItems(); // Save the updated itemArray after editing
   };
 
   const toggleIsDone = (item) => {
     item.isDone = !item.isDone;
+    saveItems(); // Save the updated itemArray after toggling
   };
 
   const getAllItems = () => itemArray;
+
+  // Function to save items to local storage
+  const saveItems = () => {
+    localStorage.setItem("itemArray", JSON.stringify(itemArray));
+  };
+
+  // Function to load items from local storage
+  const loadItems = () => {
+    const storedItems = JSON.parse(localStorage.getItem("itemArray"));
+    if (storedItems && Array.isArray(storedItems)) {
+      itemArray.length = 0; // Clear the existing itemArray
+      itemArray.push(...storedItems); // Push the stored items to the itemArray
+    }
+  };
+
+  // Call the loadItems function during module initialization to load items from local storage
+  loadItems();
 
   return {
     itemArray,
@@ -69,6 +91,7 @@ export const ProjectModule = (() => {
   const createProject = (title) => {
     const newProject = ProjectFactory(title, []);
     projectArray.push(newProject);
+    saveProjects(); // Save the updated projectArray
     return newProject;
   };
 
@@ -76,11 +99,13 @@ export const ProjectModule = (() => {
     const index = projectArray.indexOf(project);
     if (index > -1) {
       projectArray.splice(index, 1);
+      saveProjects(); // Save the updated projectArray after deletion
     }
   };
 
   const editProject = (project, title) => {
     project.title = title;
+    saveProjects(); // Save the updated projectArray after editing
   };
 
   const addProjectItem = (
@@ -100,6 +125,7 @@ export const ProjectModule = (() => {
       project
     );
     project.array.push(newProjectItem);
+    saveProjects(); // Save the updated projectArray
     return newProjectItem;
   };
 
@@ -107,6 +133,7 @@ export const ProjectModule = (() => {
     const index = project.array.indexOf(item);
     if (index > -1) {
       project.array.splice(index, 1);
+      saveProjects(); // Save the updated projectArray after item deletion
     }
   };
 
@@ -114,6 +141,23 @@ export const ProjectModule = (() => {
 
   const getProjectByTitle = (title) =>
     ProjectModule.getAllProjects().find((project) => project.title === title);
+
+  // Function to save projects to local storage
+  const saveProjects = () => {
+    localStorage.setItem("projectArray", JSON.stringify(projectArray));
+  };
+
+  // Function to load projects from local storage
+  const loadProjects = () => {
+    const storedProjects = JSON.parse(localStorage.getItem("projectArray"));
+    if (storedProjects && Array.isArray(storedProjects)) {
+      projectArray.length = 0; // Clear the existing projectArray
+      projectArray.push(...storedProjects); // Push the stored projects to the projectArray
+    }
+  };
+
+  // Call the loadProjects function during module initialization to load projects from local storage
+  loadProjects();
 
   return {
     projectArray,
@@ -222,52 +266,52 @@ export const OrganizeModule = (() => {
   };
 })();
 
-// Tests...
-const item1 = ItemModule.createItem(
-  "Item1",
-  "First item",
-  "medium",
-  new Date(2023, 4, 11),
-  false
-);
-const item2 = ItemModule.createItem(
-  "Item2",
-  "Second item",
-  "high",
-  new Date(2023, 4, 12),
-  false
-);
-const item3 = ItemModule.createItem(
-  "Item3",
-  "Third item",
-  "low",
-  new Date(2023, 4, 13),
-  false
-);
+// // Tests...
+// const item1 = ItemModule.createItem(
+//   "Item1",
+//   "First item",
+//   "medium",
+//   new Date(2023, 4, 11),
+//   false
+// );
+// const item2 = ItemModule.createItem(
+//   "Item2",
+//   "Second item",
+//   "high",
+//   new Date(2023, 4, 12),
+//   false
+// );
+// const item3 = ItemModule.createItem(
+//   "Item3",
+//   "Third item",
+//   "low",
+//   new Date(2023, 4, 13),
+//   false
+// );
 
-const aProject = ProjectModule.createProject("aProject", []);
+// const aProject = ProjectModule.createProject("aProject", []);
 
-const item4 = ProjectModule.addProjectItem(
-  aProject,
-  "Item4",
-  "Fourth item",
-  "medium",
-  new Date(2023, 4, 11),
-  false
-);
-const item5 = ProjectModule.addProjectItem(
-  aProject,
-  "Item5",
-  "Fifth item",
-  "high",
-  new Date(2023, 4, 12),
-  false
-);
-const item6 = ProjectModule.addProjectItem(
-  aProject,
-  "Item6",
-  "Sixth item",
-  "low",
-  new Date(2023, 4, 13),
-  false
-);
+// const item4 = ProjectModule.addProjectItem(
+//   aProject,
+//   "Item4",
+//   "Fourth item",
+//   "medium",
+//   new Date(2023, 4, 11),
+//   false
+// );
+// const item5 = ProjectModule.addProjectItem(
+//   aProject,
+//   "Item5",
+//   "Fifth item",
+//   "high",
+//   new Date(2023, 4, 12),
+//   false
+// );
+// const item6 = ProjectModule.addProjectItem(
+//   aProject,
+//   "Item6",
+//   "Sixth item",
+//   "low",
+//   new Date(2023, 4, 13),
+//   false
+// );
