@@ -430,7 +430,7 @@ footer a:nth-child(4) {
     * {
         overflow: hidden;
     }
-
+    
     header {
         font-size: 2rem;
         text-align: center;
@@ -442,17 +442,26 @@ footer a:nth-child(4) {
 
     main {
         width: 100%;
-        border-top: 2px solid #000;
-        border-left: 2px solid #000;
+        border-right: none;
     }
 
     aside {
         width: 100%;
-        border-right: 2px solid #000;
+        border-left: none;
     }
 
     #container {
+        border-left: 2px solid #000;
+        border-right: 2px solid #000;
         flex-direction: column;
+    }
+    
+    aside {
+        height: auto;
+    }
+
+    aside #projects {
+        height: auto; 
     }
 
     aside #projects #newProjectBtn {
