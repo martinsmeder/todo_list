@@ -275,6 +275,12 @@ export function editProjectForm(project, card) {
 // ===================================== CREATE TASKS/ITEMS ======================================
 
 export async function itemCard(item) {
+  // Skip creating the card if the item is not in the itemArray
+  if (!ItemModule.itemArray.includes(item)) {
+    // Return a comment node
+    return document.createComment("Item not in itemArray");
+  }
+
   const card = document.createElement("div");
   card.classList.add("card");
 
@@ -327,7 +333,88 @@ export async function itemCard(item) {
   deleteIcon.src = "images/delete.png";
   deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
+    console.log("Deleting item:", item); // Log the item being deleted
     await ItemModule.deleteItem(item);
+    console.log("Item deleted:", item); // Log that the item has been deleted
+    console.log("Updated item array:", ItemModule.getAllItems()); // Log the updated item array
+    card.remove();
+  });
+
+  leftDiv.appendChild(priority);
+  leftDiv.appendChild(isDone);
+  leftDiv.appendChild(title);
+  card.appendChild(leftDiv);
+
+  rightDiv.appendChild(dueDate);
+  rightDiv.appendChild(editIcon);
+  rightDiv.appendChild(deleteIcon);
+  card.appendChild(rightDiv);
+
+  return card;
+}
+
+export async function projectItemCard(projectItem) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  // card.classList.add("project-item-card");
+
+  const leftDiv = document.createElement("div");
+  leftDiv.classList.add("left");
+
+  const rightDiv = document.createElement("div");
+  rightDiv.classList.add("right");
+
+  const title = document.createElement("p");
+  title.textContent = projectItem.title;
+
+  const priority = document.createElement("div");
+  priority.classList.add("priority");
+  if (projectItem.priority === "low") {
+    priority.classList.add("low");
+  } else if (projectItem.priority === "medium") {
+    priority.classList.add("medium");
+  } else if (projectItem.priority === "high") {
+    priority.classList.add("high");
+  }
+
+  const isDone = document.createElement("input");
+  isDone.classList.add("left");
+  isDone.type = "checkbox";
+  isDone.checked = projectItem.isDone;
+  isDone.addEventListener("click", async () => {
+    await ItemModule.toggleIsDone(projectItem);
+  });
+
+  const dueDate = document.createElement("p");
+  const options = { day: "numeric", month: "short", year: "2-digit" };
+  if (typeof projectItem.dueDate === "string") {
+    // Convert the string date to a Date object
+    const date = new Date(projectItem.dueDate);
+    dueDate.textContent = date.toLocaleDateString("en-US", options);
+  } else {
+    // Assume the dueDate is already a Date object
+    dueDate.textContent = projectItem.dueDate.toLocaleDateString(
+      "en-US",
+      options
+    );
+  }
+
+  const editIcon = document.createElement("img");
+  editIcon.src = "images/edit.png";
+  editIcon.addEventListener("click", () => {
+    const editForm = editItemForm(projectItem, card); // Need editProjectItemForm as well?
+    card.replaceWith(editForm);
+  });
+
+  const deleteIcon = document.createElement("img");
+  deleteIcon.src = "images/delete.png";
+  deleteIcon.addEventListener("click", async (e) => {
+    e.preventDefault();
+    console.log("Deleting project item:", projectItem); // Log the project item being deleted
+    const project = ProjectModule.getProjectByTitle(projectItem.title);
+    await ProjectModule.deleteProjectItem(project, projectItem);
+    console.log("Project item deleted:", projectItem); // Log that the project item has been deleted
+    console.log("Updated project array:", ProjectModule.getAllProjects()); // Log the updated project array
     card.remove();
   });
 
@@ -414,10 +501,18 @@ export async function displayAllItems() {
   homeLink.classList.add("active");
 
   const items = await OrganizeModule.getAllTotalItems();
+  const projects = await ProjectModule.getAllProjects();
 
   items.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
+  });
+
+  projects.forEach(async (project) => {
+    project.array.forEach(async (projectItem) => {
+      const card = await projectItemCard(projectItem);
+      content.appendChild(card);
+    });
   });
 
   return content;
@@ -428,10 +523,18 @@ export async function displayDailyItems() {
   content.textContent = "";
 
   const items = await OrganizeModule.getAllDailyItems();
+  const projects = ProjectModule.getAllProjects();
 
   items.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
+  });
+
+  projects.forEach(async (project) => {
+    project.array.forEach(async (projectItem) => {
+      const card = await projectItemCard(projectItem);
+      content.appendChild(card);
+    });
   });
 
   return content;
@@ -442,10 +545,18 @@ export async function displayWeeklyItems() {
   content.textContent = "";
 
   const items = await OrganizeModule.getAllWeeklyItems();
+  const projects = ProjectModule.getAllProjects();
 
   items.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
+  });
+
+  projects.forEach(async (project) => {
+    project.array.forEach(async (projectItem) => {
+      const card = await projectItemCard(projectItem);
+      content.appendChild(card);
+    });
   });
 
   return content;
@@ -469,10 +580,10 @@ export async function displayProjectItems(project) {
   const content = document.querySelector("#content");
   content.textContent = "";
 
-  const items = project.array;
+  const projectItems = project.array;
 
-  items.forEach(async (item) => {
-    const card = await itemCard(item);
+  projectItems.forEach(async (projectItem) => {
+    const card = await projectItemCard(projectItem);
     content.appendChild(card);
   });
 

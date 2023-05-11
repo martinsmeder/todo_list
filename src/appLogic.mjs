@@ -269,82 +269,82 @@ export const OrganizeModule = (() => {
 })();
 
 // ======================================== DUMMY ITEMS ======================================
-const today = new Date();
+// const today = new Date();
 
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
+// const tomorrow = new Date();
+// tomorrow.setDate(tomorrow.getDate() + 1);
 
-const twoDaysFromNow = new Date();
-twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
+// const twoDaysFromNow = new Date();
+// twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
 
-const thirtyDaysFromNow = new Date();
-thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+// const thirtyDaysFromNow = new Date();
+// thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
-const item1 = ItemFactory(
-  "Finish this lengthy todo list project",
-  "Some words",
-  "low",
-  today,
-  true
-);
-ItemModule.itemArray.push(item1);
+// const item1 = ItemFactory(
+//   "Finish this lengthy todo list project",
+//   "Some words",
+//   "low",
+//   today,
+//   true
+// );
+// ItemModule.itemArray.push(item1);
 
-const item2 = ItemFactory(
-  "Buy snus and coffee to celebrate",
-  "Some words",
-  "medium",
-  tomorrow,
-  false
-);
-ItemModule.itemArray.push(item2);
+// const item2 = ItemFactory(
+//   "Buy snus and coffee to celebrate",
+//   "Some words",
+//   "medium",
+//   tomorrow,
+//   false
+// );
+// ItemModule.itemArray.push(item2);
 
-const item3 = ItemFactory(
-  "Ingest snus and coffee",
-  "Some words",
-  "high",
-  twoDaysFromNow,
-  false
-);
-ItemModule.itemArray.push(item3);
+// const item3 = ItemFactory(
+//   "Ingest snus and coffee",
+//   "Some words",
+//   "high",
+//   twoDaysFromNow,
+//   false
+// );
+// ItemModule.itemArray.push(item3);
 
-const project1 = ProjectFactory("Merge with AI", []);
-ProjectModule.projectArray.push(project1);
+// const project1 = ProjectFactory("Merge with AI", []);
+// ProjectModule.projectArray.push(project1);
 
-const item4 = ItemFactory(
-  "Acquire lots of money",
-  "Some words",
-  "low",
-  today,
-  false
-);
-project1.array.push(item4);
+// const item4 = ItemFactory(
+//   "Acquire lots of money",
+//   "Some words",
+//   "low",
+//   today,
+//   false
+// );
+// project1.array.push(item4);
 
-const item5 = ItemFactory(
-  "Pre-order neuralink",
-  "Some words",
-  "medium",
-  tomorrow,
-  false
-);
-project1.array.push(item5);
+// const item5 = ItemFactory(
+//   "Pre-order neuralink",
+//   "Some words",
+//   "medium",
+//   tomorrow,
+//   false
+// );
+// project1.array.push(item5);
 
-const item6 = ItemFactory(
-  "Profit",
-  "Some words",
-  "high",
-  twoDaysFromNow,
-  false
-);
-project1.array.push(item6);
+// const item6 = ItemFactory(
+//   "Profit",
+//   "Some words",
+//   "high",
+//   twoDaysFromNow,
+//   false
+// );
+// project1.array.push(item6);
 
-const project2 = ProjectFactory("Future thing", []);
-ProjectModule.projectArray.push(project2);
+// const project2 = ProjectFactory("Future thing", []);
+// ProjectModule.projectArray.push(project2);
 
-const item7 = ItemFactory(
-  "The thing that never get done",
-  "Some words",
-  "low",
-  thirtyDaysFromNow,
-  false
-);
-project2.array.push(item7);
+// const item7 = ItemFactory(
+//   "The thing that never get done",
+//   "Some words",
+//   "low",
+//   thirtyDaysFromNow,
+//   false
+// );
+// project2.array.push(item7);
