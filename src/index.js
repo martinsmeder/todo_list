@@ -4,6 +4,7 @@ import {
   editItemForm,
   projectForm,
   editProjectForm,
+  editProjectItemForm,
   itemCard,
   projectItemCard,
   projectCard,

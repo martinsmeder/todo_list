@@ -99,6 +99,10 @@ export const ProjectModule = (() => {
   const deleteProject = (project) => {
     const index = projectArray.indexOf(project);
     if (index > -1) {
+      // Delete all project items
+      project.array.length = 0;
+
+      // Delete the project
       projectArray.splice(index, 1);
       saveProjects(); // Save the updated projectArray after deletion
     }
@@ -138,6 +142,24 @@ export const ProjectModule = (() => {
     }
   };
 
+  const editProjectItem = async (
+    project,
+    projectItem,
+    title,
+    description,
+    priority,
+    dueDate,
+    isDone
+  ) => {
+    /* eslint-disable no-param-reassign */
+    projectItem.title = title;
+    projectItem.description = description;
+    projectItem.priority = priority;
+    projectItem.dueDate = new Date(dueDate);
+    projectItem.isDone = isDone;
+    saveProjects(); // Save the updated projectArray after editing
+  };
+
   const getAllProjects = () => projectArray;
 
   const getProjectByTitle = (title) =>
@@ -167,6 +189,7 @@ export const ProjectModule = (() => {
     editProject,
     addProjectItem,
     deleteProjectItem,
+    editProjectItem,
     getAllProjects,
     getProjectByTitle,
   };
@@ -267,6 +290,55 @@ export const OrganizeModule = (() => {
     getAllTotalItems,
   };
 })();
+
+// ======================================== TESTS ============================
+
+// const item1 = ItemModule.createItem(
+//   "Item1",
+//   "Third item",
+//   "medium",
+//   new Date(2023, 4, 19),
+//   false
+// );
+// const item2 = ItemModule.createItem(
+//   "Item2",
+//   "Fourth item",
+//   "high",
+//   new Date(2023, 4, 21),
+//   false
+// );
+
+// const aProject = ProjectModule.createProject("aProject", []);
+
+// const item3 = ProjectModule.addProjectItem(
+//   aProject,
+//   "ProjectItem1",
+//   "Third item",
+//   "medium",
+//   new Date(2023, 4, 19),
+//   false
+// );
+// const item4 = ProjectModule.addProjectItem(
+//   aProject,
+//   "ProjectItem2",
+//   "Fourth item",
+//   "high",
+//   new Date(2023, 4, 21),
+//   false
+// );
+
+// console.log(item4.title);
+
+// ProjectModule.editProjectItem(
+//   item4,
+//   "New title",
+//   item4.description,
+//   item4.priority,
+//   item4.dueDate,
+//   item4.isDone
+// );
+
+// console.log(item4.title);
 
 // ======================================== DUMMY ITEMS ======================================
 // const today = new Date();

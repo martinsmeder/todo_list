@@ -124,7 +124,9 @@ export function itemForm() {
   return content;
 }
 
-export function editItemForm(item, card) {
+export function editItemForm(project, item, card) {
+  console.log(project);
+
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -203,6 +205,95 @@ export function editItemForm(item, card) {
     card.replaceWith(await itemCard(item));
     e.target.reset();
     form.style.display = "none";
+    console.log(item.title);
+
+    await displayAllItems();
+  });
+
+  return form;
+}
+
+export function editProjectItemForm(project, projectItem, card) {
+  console.log(project);
+  console.log(projectItem);
+
+  const form = document.createElement("form");
+  form.classList.add("form");
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.name = "title";
+  titleInput.value = projectItem.title;
+
+  const descriptionArea = document.createElement("textarea");
+  descriptionArea.name = "description";
+  descriptionArea.value = projectItem.description;
+
+  const priorityInput = document.createElement("select");
+  priorityInput.name = "priority";
+
+  const lowOption = document.createElement("option");
+  lowOption.value = "low";
+  lowOption.text = "Low Priority";
+  priorityInput.appendChild(lowOption);
+
+  const mediumOption = document.createElement("option");
+  mediumOption.value = "medium";
+  mediumOption.text = "Medium Priority";
+  priorityInput.appendChild(mediumOption);
+
+  const highOption = document.createElement("option");
+  highOption.value = "high";
+  highOption.text = "High Priority";
+  priorityInput.appendChild(highOption);
+
+  priorityInput.value = projectItem.priority;
+
+  const dueDateInput = document.createElement("input");
+  dueDateInput.type = "date";
+  dueDateInput.name = "dueDate";
+  dueDateInput.value = projectItem.dueDate;
+
+  const isDoneInput = document.createElement("input");
+  isDoneInput.type = "checkbox";
+  isDoneInput.name = "isDone";
+  isDoneInput.checked = projectItem.isDone;
+  const isDoneLabel = document.createElement("label");
+  isDoneLabel.textContent = "Completed";
+  isDoneLabel.appendChild(isDoneInput);
+
+  const submitButton = document.createElement("button");
+  submitButton.type = "submit";
+  submitButton.textContent = "Update Item";
+
+  form.appendChild(titleInput);
+  form.appendChild(descriptionArea);
+  form.appendChild(priorityInput);
+  form.appendChild(dueDateInput);
+  form.appendChild(isDoneLabel);
+  form.appendChild(submitButton);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const newTitle = e.target.elements.title.value;
+    const newDescription = e.target.elements.description.value;
+    const newPriority = e.target.elements.priority.value;
+    const newDueDate = new Date(e.target.elements.dueDate.value);
+    newDueDate.setHours(0, 0, 0, 0);
+    const newIsDone = e.target.elements.isDone.checked;
+    await ProjectModule.editProjectItem(
+      project,
+      projectItem,
+      newTitle,
+      newDescription,
+      newPriority,
+      newDueDate,
+      newIsDone
+    );
+    card.replaceWith(await projectItemCard(projectItem));
+    e.target.reset();
+    form.style.display = "none";
+    console.log(projectItem.title);
 
     await displayAllItems();
   });
@@ -402,8 +493,9 @@ export async function projectItemCard(projectItem) {
   const editIcon = document.createElement("img");
   editIcon.src = "images/edit.png";
   editIcon.addEventListener("click", () => {
-    const editForm = editItemForm(projectItem, card); // Need editProjectItemForm as well?
+    const editForm = editProjectItemForm(projectItem, card); // Need editProjectItemForm as well?
     card.replaceWith(editForm);
+    console.log(projectItem.title);
   });
 
   const deleteIcon = document.createElement("img");
@@ -411,11 +503,20 @@ export async function projectItemCard(projectItem) {
   deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
     console.log("Deleting project item:", projectItem); // Log the project item being deleted
-    const project = ProjectModule.getProjectByTitle(projectItem.title);
-    await ProjectModule.deleteProjectItem(project, projectItem);
-    console.log("Project item deleted:", projectItem); // Log that the project item has been deleted
-    console.log("Updated project array:", ProjectModule.getAllProjects()); // Log the updated project array
-    card.remove();
+
+    // eslint-disable-next-line no-shadow
+    const project = ProjectModule.getAllProjects().find((project) =>
+      project.array.some((item) => item === projectItem)
+    );
+
+    if (project) {
+      await ProjectModule.deleteProjectItem(project, projectItem);
+      console.log("Project item deleted:", projectItem); // Log that the project item has been deleted
+      console.log("Updated project array:", project.array); // Log the updated project array
+      card.remove();
+    } else {
+      console.log("Project not found for the project item:", projectItem);
+    }
   });
 
   leftDiv.appendChild(priority);
@@ -473,6 +574,7 @@ export async function projectCard(project) {
     e.preventDefault();
     await ProjectModule.deleteProject(project);
     card.remove();
+    await displayAllItems();
   });
 
   leftDiv.appendChild(title);

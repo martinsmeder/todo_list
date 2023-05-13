@@ -36,9 +36,3 @@ const item4 = ProjectModule.addProjectItem(
 
 console.table(OrganizeModule.getAllDailyItems());
 console.table(OrganizeModule.getAllWeeklyItems());
-console.table(
-  OrganizeModule.sortByDate([...ItemModule.itemArray, ...aProject.array])
-);
-console.table(
-  OrganizeModule.sortByPriority([...ItemModule.itemArray, ...aProject.array])
-);
