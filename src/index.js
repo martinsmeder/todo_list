@@ -10,7 +10,9 @@ import {
   projectCard,
   displayAllItems,
   displayDailyItems,
+  displayDailyProjectItems,
   displayWeeklyItems,
+  displayWeeklyProjectItems,
   displayProjects,
   displayProjectItems,
   // eslint-disable-next-line import/extensions
@@ -46,11 +48,13 @@ async function controller(project) {
   const dailyLink = document.querySelector("#allItems a:nth-child(2)");
   dailyLink.addEventListener("click", async () => {
     await displayDailyItems();
+    await displayDailyProjectItems();
   });
 
   const weeklyLink = document.querySelector("#allItems a:nth-child(3)");
   weeklyLink.addEventListener("click", async () => {
     await displayWeeklyItems();
+    await displayWeeklyProjectItems();
   });
 
   const newTaskBtn = document.querySelector("#newTaskBtn");

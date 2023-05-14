@@ -124,8 +124,12 @@ export function itemForm() {
   return content;
 }
 
-export function editItemForm(project, item, card) {
-  console.log(project);
+export function editItemForm(item, card) {
+  // Skip editing item if item is not in the itemArray
+  if (!ItemModule.itemArray.includes(item)) {
+    // Return a comment node
+    return document.createComment("Item not in itemArray");
+  }
 
   const form = document.createElement("form");
   form.classList.add("form");
@@ -205,7 +209,6 @@ export function editItemForm(project, item, card) {
     card.replaceWith(await itemCard(item));
     e.target.reset();
     form.style.display = "none";
-    console.log(item.title);
 
     await displayAllItems();
   });
@@ -214,9 +217,6 @@ export function editItemForm(project, item, card) {
 }
 
 export function editProjectItemForm(project, projectItem, card) {
-  console.log(project);
-  console.log(projectItem);
-
   const form = document.createElement("form");
   form.classList.add("form");
 
@@ -252,7 +252,10 @@ export function editProjectItemForm(project, projectItem, card) {
   const dueDateInput = document.createElement("input");
   dueDateInput.type = "date";
   dueDateInput.name = "dueDate";
-  dueDateInput.value = projectItem.dueDate;
+  // Convert the dueDate string to the desired format "YYYY-MM-DD"
+  const dueDate = new Date(projectItem.dueDate);
+  const formattedDueDate = dueDate.toISOString().split("T")[0];
+  dueDateInput.value = formattedDueDate;
 
   const isDoneInput = document.createElement("input");
   isDoneInput.type = "checkbox";
@@ -293,7 +296,6 @@ export function editProjectItemForm(project, projectItem, card) {
     card.replaceWith(await projectItemCard(projectItem));
     e.target.reset();
     form.style.display = "none";
-    console.log(projectItem.title);
 
     await displayAllItems();
   });
@@ -424,10 +426,7 @@ export async function itemCard(item) {
   deleteIcon.src = "images/delete.png";
   deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
-    console.log("Deleting item:", item); // Log the item being deleted
     await ItemModule.deleteItem(item);
-    console.log("Item deleted:", item); // Log that the item has been deleted
-    console.log("Updated item array:", ItemModule.getAllItems()); // Log the updated item array
     card.remove();
   });
 
@@ -473,37 +472,42 @@ export async function projectItemCard(projectItem) {
   isDone.type = "checkbox";
   isDone.checked = projectItem.isDone;
   isDone.addEventListener("click", async () => {
-    await ItemModule.toggleIsDone(projectItem);
+    await ProjectModule.toggleIsDone(projectItem);
   });
 
   const dueDate = document.createElement("p");
   const options = { day: "numeric", month: "short", year: "2-digit" };
-  if (typeof projectItem.dueDate === "string") {
-    // Convert the string date to a Date object
-    const date = new Date(projectItem.dueDate);
-    dueDate.textContent = date.toLocaleDateString("en-US", options);
-  } else {
-    // Assume the dueDate is already a Date object
-    dueDate.textContent = projectItem.dueDate.toLocaleDateString(
-      "en-US",
-      options
-    );
+
+  if (projectItem.dueDate) {
+    if (typeof projectItem.dueDate === "string") {
+      // Convert the string date to a Date object
+      const date = new Date(projectItem.dueDate);
+      dueDate.textContent = date.toLocaleDateString("en-US", options);
+    } else {
+      // Assume the dueDate is already a Date object
+      dueDate.textContent = projectItem.dueDate.toLocaleDateString(
+        "en-US",
+        options
+      );
+    }
   }
 
   const editIcon = document.createElement("img");
   editIcon.src = "images/edit.png";
   editIcon.addEventListener("click", () => {
-    const editForm = editProjectItemForm(projectItem, card); // Need editProjectItemForm as well?
+    // eslint-disable-next-line no-shadow
+    const project = ProjectModule.getAllProjects().find((project) =>
+      project.array.some((item) => item === projectItem)
+    );
+
+    const editForm = editProjectItemForm(project, projectItem, card);
     card.replaceWith(editForm);
-    console.log(projectItem.title);
   });
 
   const deleteIcon = document.createElement("img");
   deleteIcon.src = "images/delete.png";
   deleteIcon.addEventListener("click", async (e) => {
     e.preventDefault();
-    console.log("Deleting project item:", projectItem); // Log the project item being deleted
-
     // eslint-disable-next-line no-shadow
     const project = ProjectModule.getAllProjects().find((project) =>
       project.array.some((item) => item === projectItem)
@@ -511,11 +515,7 @@ export async function projectItemCard(projectItem) {
 
     if (project) {
       await ProjectModule.deleteProjectItem(project, projectItem);
-      console.log("Project item deleted:", projectItem); // Log that the project item has been deleted
-      console.log("Updated project array:", project.array); // Log the updated project array
       card.remove();
-    } else {
-      console.log("Project not found for the project item:", projectItem);
     }
   });
 
@@ -625,18 +625,24 @@ export async function displayDailyItems() {
   content.textContent = "";
 
   const items = await OrganizeModule.getAllDailyItems();
-  const projects = ProjectModule.getAllProjects();
 
   items.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
 
-  projects.forEach(async (project) => {
-    project.array.forEach(async (projectItem) => {
-      const card = await projectItemCard(projectItem);
-      content.appendChild(card);
-    });
+  return content;
+}
+
+export async function displayDailyProjectItems() {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const items = await OrganizeModule.getAllDailyItems();
+
+  items.forEach(async (projectItem) => {
+    const card = await projectItemCard(projectItem);
+    content.appendChild(card);
   });
 
   return content;
@@ -647,18 +653,24 @@ export async function displayWeeklyItems() {
   content.textContent = "";
 
   const items = await OrganizeModule.getAllWeeklyItems();
-  const projects = ProjectModule.getAllProjects();
 
   items.forEach(async (item) => {
     const card = await itemCard(item);
     content.appendChild(card);
   });
 
-  projects.forEach(async (project) => {
-    project.array.forEach(async (projectItem) => {
-      const card = await projectItemCard(projectItem);
-      content.appendChild(card);
-    });
+  return content;
+}
+
+export async function displayWeeklyProjectItems() {
+  const content = document.querySelector("#content");
+  content.textContent = "";
+
+  const items = await await OrganizeModule.getAllWeeklyItems();
+
+  items.forEach(async (projectItem) => {
+    const card = await projectItemCard(projectItem);
+    content.appendChild(card);
   });
 
   return content;

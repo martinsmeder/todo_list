@@ -160,6 +160,11 @@ export const ProjectModule = (() => {
     saveProjects(); // Save the updated projectArray after editing
   };
 
+  const toggleIsDone = (projectItem) => {
+    projectItem.isDone = !projectItem.isDone;
+    saveProjects(); // Save the updated itemArray after toggling
+  };
+
   const getAllProjects = () => projectArray;
 
   const getProjectByTitle = (title) =>
@@ -190,6 +195,7 @@ export const ProjectModule = (() => {
     addProjectItem,
     deleteProjectItem,
     editProjectItem,
+    toggleIsDone,
     getAllProjects,
     getProjectByTitle,
   };
@@ -231,21 +237,20 @@ export const OrganizeModule = (() => {
   const getAllDailyItems = () => {
     const allDailyItems = [];
 
-    // Create a copy of the array of all items using the spread operator
-    const allItems = [...ItemModule.itemArray];
-
-    // Iterate through all projects and add their items to the allItems array
-    ProjectModule.projectArray.forEach((project) => {
-      allItems.push(...project.array);
-    });
-
-    // Iterate through all items
-    allItems.forEach((item) => {
-      // Check if the item is due today...
+    // Iterate through all items in ItemModule.itemArray
+    ItemModule.itemArray.forEach((item) => {
       if (isDueToday(item.dueDate)) {
-        // ...if the item is due today, add it to the allDailyItems array
         allDailyItems.push(item);
       }
+    });
+
+    // Iterate through all projects and their items
+    ProjectModule.projectArray.forEach((project) => {
+      project.array.forEach((projectItem) => {
+        if (isDueToday(projectItem.dueDate)) {
+          allDailyItems.push(projectItem);
+        }
+      });
     });
 
     return allDailyItems;
@@ -254,19 +259,20 @@ export const OrganizeModule = (() => {
   const getAllWeeklyItems = () => {
     const allWeeklyItems = [];
 
-    // Create a copy of the array of all items using the spread operator
-    const allItems = [...ItemModule.itemArray];
-
-    // Add items from each project to the allItems array
-    ProjectModule.projectArray.forEach((project) => {
-      allItems.push(...project.array);
-    });
-
-    // Add all the items that are due within this week to the allWeeklyItems array
-    allItems.forEach((item) => {
+    // Iterate through all items in ItemModule.itemArray
+    ItemModule.itemArray.forEach((item) => {
       if (isDueThisWeek(item.dueDate)) {
         allWeeklyItems.push(item);
       }
+    });
+
+    // Iterate through all projects and their items
+    ProjectModule.projectArray.forEach((project) => {
+      project.array.forEach((projectItem) => {
+        if (isDueThisWeek(projectItem.dueDate)) {
+          allWeeklyItems.push(projectItem);
+        }
+      });
     });
 
     return allWeeklyItems;
@@ -290,55 +296,6 @@ export const OrganizeModule = (() => {
     getAllTotalItems,
   };
 })();
-
-// ======================================== TESTS ============================
-
-// const item1 = ItemModule.createItem(
-//   "Item1",
-//   "Third item",
-//   "medium",
-//   new Date(2023, 4, 19),
-//   false
-// );
-// const item2 = ItemModule.createItem(
-//   "Item2",
-//   "Fourth item",
-//   "high",
-//   new Date(2023, 4, 21),
-//   false
-// );
-
-// const aProject = ProjectModule.createProject("aProject", []);
-
-// const item3 = ProjectModule.addProjectItem(
-//   aProject,
-//   "ProjectItem1",
-//   "Third item",
-//   "medium",
-//   new Date(2023, 4, 19),
-//   false
-// );
-// const item4 = ProjectModule.addProjectItem(
-//   aProject,
-//   "ProjectItem2",
-//   "Fourth item",
-//   "high",
-//   new Date(2023, 4, 21),
-//   false
-// );
-
-// console.log(item4.title);
-
-// ProjectModule.editProjectItem(
-//   item4,
-//   "New title",
-//   item4.description,
-//   item4.priority,
-//   item4.dueDate,
-//   item4.isDone
-// );
-
-// console.log(item4.title);
 
 // ======================================== DUMMY ITEMS ======================================
 // const today = new Date();
